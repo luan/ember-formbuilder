@@ -1,0 +1,1 @@
+minispade.register('ember-formbuilder/views/formbuilder', "(function() {(function() {\n\n  Ember.FormBuilder = Ember.View.extend({\n    tagName: 'form'\n  });\n\n}).call(this);\n})();\n//@ sourceURL=ember-formbuilder/views/formbuilder");

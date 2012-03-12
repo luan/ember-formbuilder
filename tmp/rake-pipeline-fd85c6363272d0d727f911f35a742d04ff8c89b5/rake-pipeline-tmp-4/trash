@@ -1,0 +1,30 @@
+{
+  "name": "ember-formbuilder",
+  "summary": "A formbuilder for Ember",
+  "description": "Ember FormBuilder is a library to build forms easily.",
+  "homepage": "https://github.com/luan/ember-formbuilder",
+  "author": "Luan Santos",
+  "version": "0.1.0.pre",
+
+  "directories": {
+    "lib": "lib"
+  },
+
+  "dependencies": {
+    "spade": "~> 1.0",
+    "ember-runtime": ">= 0"
+  },
+  "dependencies:development": {
+    "spade-qunit": "~> 1.0.0"
+  },
+  "bpm:build": {
+    "bpm_libs.js": {
+      "files": ["lib"],
+      "modes": "*"
+    },
+    "ember-formbuilder/bpm_tests.js": {
+      "files": ["tests"],
+      "modes": ["debug"]
+    }
+  }
+}

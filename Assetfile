@@ -1,0 +1,45 @@
+require "json"
+require "uglifier"
+require "rake-pipeline-web-filters"
+
+# this gives you concat, coffee_script, and minispade methods
+require "rake-pipeline-web-filters/helpers"
+output "tests/source"
+
+
+input "packages" do
+  match "*/{lib,tests}/**/*.coffee" do
+    coffee_script
+  end
+
+  match "*/{lib,tests}/**/*.js" do
+    minispade :rewrite_requires => true, :string => true, :module_id_generator => proc { |input|
+      id = input.path.dup
+      id.sub!('/lib/', '/')
+      id.sub!(/\.js$/, '')
+      id.sub!(/\/main$/, '')
+      id.sub!('/tests', '/~tests')
+      id
+    }
+
+    concat do |filename|
+      filename =~ %r{/tests/} ? "ember-tests.js" : "ember.js"
+    end
+  end
+
+  # Hack to ignore certain files
+  match "**/*.{json,md}" do
+    concat "trash"
+  end
+
+  match "**/README" do
+    concat "trash"
+  end
+
+  match "*/*.js" do
+    concat "trash"
+  end
+end
+
+
+# vim: filetype=ruby
