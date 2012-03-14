@@ -2,17 +2,11 @@
 
 Ember FormBuilder is a form builder implementation for [Ember.js](http://emberjs.com) and Handlebars. It's inspired by the Rails form builders, simple_form and formtastic.
 
-## *!!! WARNING !!!*
-
-README Driven Development: These features described below are _NOT_ yet implemented.
-
 ## Installation
-
 
 Just download the latest version of the ember-formbuilder.js file and include it *after* ember.js.
 
 ## Configuration
-
 
 Ember FormBuilder comes with (for now) one configuration built in. Configurations are made using Embers Mixins. The default built-in configuration generates forms according to [Twitter Bootstrap 2.0](http://twitter.github.com/bootstrap/).
 In order to create your own configuration just create an Ember Mixin and then include it into the FormBuilders core:
@@ -33,8 +27,8 @@ Bootstrap = Ember.Mixin.create
   cancelClass: 'btn btn-danger'
 Ember.FormBuilder.repoen(Bootstrap)
 ```
-## Usage
 
+## Usage
 
 Inside your Handlebars templates you can create forms simply using this DSL:
 
@@ -66,8 +60,8 @@ This form sets properties inside the `user` object with the names passed to the 
 If you don't have an object to bind the properties, well, you should. Just create an hypothetical object to bind over here, properties are created and defaulted to string if they don't exist.
 Syntax is pretty straightforward and similar to SimpleForms one.
 The add/remove association is inspired by the Cocoon gem.
-### Events
 
+## Events
 
 FormBuilder automatically fires events in the view, they are:
 * <modelName>Submit
@@ -90,8 +84,8 @@ App.EditUserView = Ember.View.extend
     # do whatever you want
     # return false to disable default behavior (which is resetting the properties)
 ```
-### Client-Side Validations
 
+## Client-Side Validations
 
 You can set up validations within the object that your form is dealing with, here is an example that covers most of it:
 
@@ -116,8 +110,7 @@ App.User = Ember.Object.extend
         inclusion: App.categoriesController
 ```
 
-### Labels, hints, error messages, and placeholders
-
+## Labels, hints, error messages, and placeholders
 
 You can redefine the label with the `label=` option, and so with other parameters:
 
