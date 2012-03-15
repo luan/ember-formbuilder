@@ -15,6 +15,8 @@ Ember.FormBuilder.Input = Ember.View.extend
     @set 'showLabel', true if @get('showLabel') is undefined
     @set 'infoClass', @get('infoClass') || ''
 
+    @set 'value', '' if Ember.empty(@get('value'))
+
     @set 'template', Ember.Handlebars.compile '
       {{#if showLabel}}
         <label class="string required control-label" for="function_name">

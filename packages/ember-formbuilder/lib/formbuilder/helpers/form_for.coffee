@@ -4,4 +4,4 @@ Ember.Handlebars.registerHelper "formFor", (object, options) ->
   options.hash.contentBinding = object
   options.hash.preserveContext = true
 
-  Ember.Handlebars.helpers.view.call this, Ember.FormBuilder.Form, options
+  Ember.Handlebars.helpers.view.call this, 'Ember.FormBuilder.Form', options

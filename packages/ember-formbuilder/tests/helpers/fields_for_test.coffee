@@ -25,7 +25,9 @@ module "formFor Helper"
           {{#formFor "object"}}
             {{#fieldsFor "books"}}
               {{input "title"}}
+              {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
             {{/fieldsFor}}
+            {{addAssociation "books" objectClass="Ember.Object" text="Add Book" classes="btn btn-success"}}
           {{/formFor}}
         </section>
       '
@@ -56,3 +58,32 @@ test "bindings", ->
   ok view.$('form div input').length is 3, "should have 3 nested divs"
   ok view.$('form div input').first().val() is 'Changed #1', "values bind to correct child"
   ok view.$('form div input').last().val() isnt 'Changed #1', "values DOESNT bind to wrong child"
+
+test "add associations", ->
+  Ember.run ->
+    appendView(view)
+
+  link = view.$('form a').last()
+
+  ok link.hasClass('btn-success'), "should have the class specified"
+  ok link.text() is 'Add Book', "should have a link to add association"
+
+  Ember.run ->
+    Ember.View.views[link.attr('id')].click()
+
+  ok view.$('form div input').length is 3, "should have 3 nested divs"
+
+test "remove associations", ->
+  Ember.run ->
+    appendView(view)
+
+  link = view.$('form a').first()
+
+  ok link.hasClass('btn-danger'), "should have the class specified"
+  ok link.text() is 'Remove Book', "should have a link to remove association"
+
+  Ember.run ->
+    Ember.View.views[link.attr('id')].click()
+
+  ok view.$('form div input').length is 1, "should have 1 nested divs"
+

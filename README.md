@@ -51,9 +51,9 @@ Inside your Handlebars templates you can create forms simply using this DSL:
   {{#fieldsFor "books"}}
     {{input "title"}}
     {{input "author"}}
-    {{removeAssociation "Remove Book" classes="btn btn-danger"}}
+    {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
   {{/fields}}
-  {{addAssociation "books" text="Add Book" classes="btn btn-success"}}
+  {{addAssociation "books" text="Add Book" objectClass="App.Models.Book" classes="btn btn-success"}}
 
   {{submit "Save"}}
   {{cancel "Reset"}}
