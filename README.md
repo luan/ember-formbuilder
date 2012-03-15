@@ -37,7 +37,7 @@ Ember.FormBuilder.repoen(Bootstrap)
 Inside your Handlebars templates you can create forms simply using this DSL:
 
 ```html
-{{#form_for "user" classes="form-horizontal"}}
+{{#formFor "user" classes="form-horizontal"}}
   <legend>User Data:</legend>
 
   {{input "name" hint="Type your name"}}
@@ -48,19 +48,19 @@ Inside your Handlebars templates you can create forms simply using this DSL:
   {{input "categories" as="checkboxes" collectionBinding="App.categoriesController"}}
   {{input "option" as="radio_buttons" collectionBinding="App.optionsController"}}
 
-  {{#fields_for books}}
+  {{#fieldsFor "books"}}
     {{input "title"}}
     {{input "author"}}
-    {{remove_association "Remove Book" classes="btn btn-danger"}}
+    {{removeAssociation "Remove Book" classes="btn btn-danger"}}
   {{/fields}}
-  {{add_association "books" text="Add Book" classes="btn btn-success"}}
+  {{addAssociation "books" text="Add Book" classes="btn btn-success"}}
 
   {{submit "Save"}}
   {{cancel "Reset"}}
 {{/form}}
 ```
 
-This form sets properties inside the `user` object with the names passed to the `input` helper. 
+This form sets properties inside the `user` object with the names passed to the `input` helper.
 If you don't have an object to bind the properties, well, you should. Just create an hypothetical object to bind over here, properties are created and defaulted to string if they don't exist.
 Syntax is pretty straightforward and similar to SimpleForms one.
 The add/remove association is inspired by the Cocoon gem.

@@ -1,1 +1,0 @@
-minispade.register('ember-formbuilder', "(function() {(function() {\nminispade.require(\"ember-formbuilder/formbuilder\");\n\n}).call(this);\n})();\n//@ sourceURL=ember-formbuilder");

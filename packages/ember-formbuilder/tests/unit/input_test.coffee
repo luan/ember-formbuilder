@@ -3,6 +3,7 @@ set = Ember.set
 getPath = Ember.getPath
 
 input = null
+delay = (ms, func) -> setTimeout func, ms
 
 appendView = (v) ->
   Ember.run -> v.appendTo('#qunit-fixture')
@@ -39,15 +40,11 @@ test "generates aa input tag", ->
   ok input.$('input').length is 1
 
 test "binds value correctly", ->
-  myValue = ""
-  input.set 'valueBinding', 'myValue'
-  appendView input
-  input.$('input').val('test')
-  input.inputView.change()
-
-  setTimeout 200, ->
-    console.log myValue
-    ok myValue is 'test'
+  o = Ember.Object.create()
+  Ember.run ->
+    appendView input
+    input.set 'value', 'test'
+  ok input.$('input').val() is 'test'
 
 test "has a label", ->
   appendView input
@@ -74,11 +71,11 @@ test "shows errors and hints", ->
   ok  in input.$(hintSelector).text() is "test@example.com"
 
 test "works for textarea", ->
-  input.set 'inputViewClass', Ember.TextArea
+  input = Ember.FormBuilder.Input.create inputView: 'Ember.TextArea'
   appendView input
   ok input.$('textarea').length is 1
 
 test "works for checkbox", ->
-  input.set 'inputViewClass', Ember.Checkbox
+  input = Ember.FormBuilder.Input.create inputView: 'Ember.Checkbox'
   appendView input
   ok input.$('input[type=checkbox]').length is 1
