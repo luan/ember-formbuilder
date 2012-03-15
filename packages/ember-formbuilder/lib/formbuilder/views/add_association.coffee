@@ -7,3 +7,4 @@ Ember.FormBuilder.AddAssociation = Ember.View.extend
     content = @get('content')
     cls = Ember.getPath(@get 'objectClass')
     content.pushObject cls.create()
+    console.log 'AddAssociation'

@@ -1,13 +1,16 @@
 MyView = Ember.View.extend({
   init: function() {
-    this._super()
+    this._super();
     this.set('object',
       Ember.Object.create({
-        name: '',
+        name: 'asd',
         books: Ember.ArrayProxy.create({
-          content: []
+          content: [
+            Ember.Object.create({title: 'bigorna'})
+          ]
         })
       })
-    )
+    );
+    window.object = this.get('object');
   }
 });

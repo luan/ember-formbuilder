@@ -86,11 +86,11 @@ distributions = {
 distributions.each do |name, libraries|
   # Strip out require lines. For the interim, requires are
   # precomputed by the compiler so they are no longer necessary at runtime.
+  rm "dist/#{name}.js"
   file "dist/#{name}.js" => :build do
     puts "Generating #{name}.js"
 
     mkdir_p "dist", :verbose => false
-
     File.open("dist/#{name}.js", "w") do |file|
       libraries.each do |library|
         file.puts strip_require("tmp/static/#{library}.js")
