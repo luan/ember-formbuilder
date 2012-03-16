@@ -46,4 +46,3 @@ test "inputs with bindings", ->
     
   ok object.get('name') is 'Changed Again', "bindings should be bound both sides"
   ok $('#name').text() is 'Changed Again', "binds to all instances"
-

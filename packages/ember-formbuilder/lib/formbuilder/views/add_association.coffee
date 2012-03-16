@@ -4,7 +4,6 @@ Ember.FormBuilder.AddAssociation = Ember.View.extend
   template: Ember.Handlebars.compile '{{text}}'
 
   click: ->
-    console.log('oi')
-    content = @get('content')
-    cls = Ember.getPath(@get 'objectClass')
+    content = @content
+    cls = Ember.getPath(@objectClass)
     content.pushObject cls.create()

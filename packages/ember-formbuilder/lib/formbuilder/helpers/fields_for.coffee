@@ -3,5 +3,6 @@ Ember.Handlebars.registerHelper "fieldsFor", (property, options) ->
 
   options.hash.contentBinding = "bindingContext.object.#{property}"
   options.hash.preserveContext = false
+  options.hash.form = this
 
   Ember.Handlebars.helpers.collection.call this, 'Ember.FormBuilder.NestedFields', options

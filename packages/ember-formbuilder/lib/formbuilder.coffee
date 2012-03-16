@@ -1,4 +1,4 @@
-Ember.FormBuilder = Ember.Namespace.create
+Bootstrap = Ember.Mixin.create
   wrapperTag: 'div'
   wrapperClass: 'control-group'
   inputWrapperTag: 'div'
@@ -8,12 +8,22 @@ Ember.FormBuilder = Ember.Namespace.create
   helpClass: 'help-block'
   errorTag: 'span'
   errorClass: 'help-inline'
+  formClass: 'form-vertical'
+  submitClass: 'btn btn-success'
+  cancelClass: 'btn btn-danger'
+
+Ember.FormBuilder = Ember.Namespace.create
+  mixins:
+    'bootstrap': Bootstrap
+
+  pushMixin: (mixin, mixinName) ->
+    @mixins[mixinName] = mixin
+
+  getMixin: (mixinName) ->
+    @mixins[mixinName]
 
 require "ember-formbuilder/formbuilder/views/form"
 require "ember-formbuilder/formbuilder/views/input"
-require "ember-formbuilder/formbuilder/views/_info"
-require "ember-formbuilder/formbuilder/views/help"
-require "ember-formbuilder/formbuilder/views/error"
 require "ember-formbuilder/formbuilder/views/add_association"
 require "ember-formbuilder/formbuilder/views/remove_association"
 require "ember-formbuilder/formbuilder/views/nested_fields"

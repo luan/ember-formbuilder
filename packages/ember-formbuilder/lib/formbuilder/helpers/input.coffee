@@ -9,5 +9,6 @@ Ember.Handlebars.registerHelper "input", (property, options) ->
     options.hash.label = words.join(' ')
   options.hash.valueBinding = "content.#{property}"
   options.hash.preserveContext = true
+  options.hash.form = this
 
   Ember.Handlebars.helpers.view.call this, 'Ember.FormBuilder.Input', options

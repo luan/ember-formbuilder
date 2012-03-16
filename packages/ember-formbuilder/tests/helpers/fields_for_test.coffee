@@ -1,15 +1,11 @@
 view = null
 object = null
 
-Ember.FormBuilder.AddAssociation.reopen(tagName: 'span')
-Ember.FormBuilder.RemoveAssociation.reopen(tagName: 'span')
-
 appendView = ->
   Ember.run -> view.appendTo('#qunit-fixture')
 
 module "fieldsFor Helper"
   setup: ->
-
     object = Ember.Object.create
       books: Ember.ArrayProxy.create
         content: [
@@ -53,7 +49,7 @@ test "bindings", ->
   ok view.$('form div input').last().val() isnt 'Changed #1', "values DOESNT bind to wrong child"
 
 test "add associations", ->
-  link = view.$('form span').last()
+  link = view.$('form a').last()
 
   ok link.hasClass('btn-success'), "should have the class specified"
   ok link.text() is 'Add Book', "should have a link to add association"
@@ -64,7 +60,7 @@ test "add associations", ->
   ok view.$('form div input').length is 3, "should have 3 nested divs"
 
 test "remove associations", ->
-  link = view.$('form span').first()
+  link = view.$('form a').first()
 
   ok link.hasClass('btn-danger'), "should have the class specified"
   ok link.text() is 'Remove Book', "should have a link to remove association"

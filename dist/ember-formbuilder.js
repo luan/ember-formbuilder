@@ -1,8 +1,9 @@
 
 (function(exports) {
 (function() {
+  var Bootstrap;
 
-  Ember.FormBuilder = Ember.Namespace.create({
+  Bootstrap = Ember.Mixin.create({
     wrapperTag: 'div',
     wrapperClass: 'control-group',
     inputWrapperTag: 'div',
@@ -11,14 +12,23 @@
     helpTag: 'p',
     helpClass: 'help-block',
     errorTag: 'span',
-    errorClass: 'help-inline'
+    errorClass: 'help-inline',
+    formClass: 'form-vertical',
+    submitClass: 'btn btn-success',
+    cancelClass: 'btn btn-danger'
   });
 
-
-
-
-
-
+  Ember.FormBuilder = Ember.Namespace.create({
+    mixins: {
+      'bootstrap': Bootstrap
+    },
+    pushMixin: function(mixin, mixinName) {
+      return this.mixins[mixinName] = mixin;
+    },
+    getMixin: function(mixinName) {
+      return this.mixins[mixinName];
+    }
+  });
 
 
 
@@ -67,6 +77,7 @@
     ember_assert("The fieldsFor helper only takes a single argument", arguments.length <= 2);
     options.hash.contentBinding = "bindingContext.object." + property;
     options.hash.preserveContext = false;
+    options.hash.form = this;
     return Ember.Handlebars.helpers.collection.call(this, 'Ember.FormBuilder.NestedFields', options);
   });
 
@@ -105,6 +116,7 @@
     }
     options.hash.valueBinding = "content." + property;
     options.hash.preserveContext = true;
+    options.hash.form = this;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.Input', options);
   });
 
@@ -132,45 +144,15 @@
 (function(exports) {
 (function() {
 
-  Ember.FormBuilder.Info = Ember.View.extend({
-    classNameBindings: ['classes'],
-    template: Ember.Handlebars.compile('{{text}}')
-  });
-
-}).call(this);
-
-})({});
-
-
-(function(exports) {
-(function() {
-
   Ember.FormBuilder.AddAssociation = Ember.View.extend({
     tagName: 'a',
     classNameBindings: ['classes'],
     template: Ember.Handlebars.compile('{{text}}'),
     click: function() {
       var cls, content;
-      console.log('oi');
-      content = this.get('content');
-      cls = Ember.getPath(this.get('objectClass'));
+      content = this.content;
+      cls = Ember.getPath(this.objectClass);
       return content.pushObject(cls.create());
-    }
-  });
-
-}).call(this);
-
-})({});
-
-
-(function(exports) {
-(function() {
-
-  Ember.FormBuilder.Error = Ember.FormBuilder.Info.extend({
-    init: function() {
-      this._super();
-      this.set('classes', this.get('classes') || Ember.FormBuilder.errorClass);
-      return this.set('tagName', this.get('tagName') || Ember.FormBuilder.errorTag);
     }
   });
 
@@ -184,22 +166,11 @@
 
   Ember.FormBuilder.Form = Ember.View.extend({
     tagName: 'form',
-    classNameBindings: ['classes']
-  });
-
-}).call(this);
-
-})({});
-
-
-(function(exports) {
-(function() {
-
-  Ember.FormBuilder.Help = Ember.FormBuilder.Info.extend({
+    classNameBindings: ['classes', 'formClass'],
     init: function() {
       this._super();
-      this.set('classes', this.get('classes') || Ember.FormBuilder.helpClass);
-      return this.set('tagName', this.get('tagName') || Ember.FormBuilder.helpTag);
+      this.set('mixin', this.mixin || 'bootstrap');
+      return this.reopen(Ember.FormBuilder.getMixin(this.mixin));
     }
   });
 
@@ -212,38 +183,52 @@
 (function() {
 
   Ember.FormBuilder.Input = Ember.View.extend({
-    tagName: Ember.FormBuilder.wrapperTag,
+    tagNameBinding: 'wrapperTag',
     classNameBindings: ['wrapperClass', 'infoClass'],
     inputClass: '',
     label: '',
     init: function() {
       this._super();
-      this.set('inputView', this.get('inputView') || 'Ember.TextField');
-      this.set('inputWrapperTag', this.get('inputWrapperTag') || Ember.FormBuilder.inputWrapperTag);
-      this.set('inputWrapperClass', this.get('inputWrapperClass') || Ember.FormBuilder.inputWrapperClass);
-      this.set('wrapperClass', this.get('wrapperClass') || Ember.FormBuilder.wrapperClass);
-      if (this.get('showLabel') === void 0) this.set('showLabel', true);
-      this.set('infoClass', this.get('infoClass') || '');
-      if (Ember.empty(this.get('value'))) this.set('value', '');
+      this.set('inputView', this.inputView || 'Ember.TextField');
+      this.set('wrapperTag', this.wrapperTag || this.form.wrapperTag);
+      this.set('wrapperClass', this.wrapperClass || this.form.wrapperClass);
+      this.set('inputWrapperTag', this.inputWrapperTag || this.form.inputWrapperTag);
+      this.set('inputWrapperClass', this.inputWrapperClass || this.form.inputWrapperClass);
+      this.set('labelClass', this.labelClass || this.form.labelClass);
+      this.set('helpTag', this.helpTag || this.form.helpTag);
+      this.set('helpClass', this.helpClass || this.form.helpClass);
+      this.set('errorTag', this.errorTag || this.form.errorTag);
+      this.set('errorClass', this.errorClass || this.form.errorClass);
+      if (this.showLabel === void 0) this.set('showLabel', true);
+      if (Ember.empty(this.value)) this.set('value', '');
+      this.errorChanged();
       return this.set('template', Ember.Handlebars.compile('\
       {{#if showLabel}}\
-        <label class="string required control-label" for="' + Ember.guidFor(this) + 'input">\
+        <label {{bindAttr class="labelClass"}} for="' + Ember.guidFor(this) + 'input">\
           {{label}}\
         </label>\
       {{/if}}\
       {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}\
         {{view ' + this.inputView + ' id="' + Ember.guidFor(this) + 'input" class=content.inputClass valueBinding="content.value"}}\
         {{#if content.error}}\
-          {{view Ember.FormBuilder.Error text=content.error}}\
+          {{#view Ember.View class=content.errorClass tagNameBinding="content.errorTag" contentBinding="content"}}\
+            {{content.error}}\
+          {{/view}}\
         {{/if}}\
         {{#if content.hint}}\
-          {{view Ember.FormBuilder.Help text=content.hint}}\
+          {{#view Ember.View class=content.helpClass tagNameBinding="content.helpTag" contentBinding="content"}}\
+            {{content.hint}}\
+          {{/view}}\
         {{/if}}\
       {{/view}}\
     '));
     },
     errorChanged: Ember.observer(function() {
-      if (this.get('error') !== void 0) return this.set('infoClass', 'error');
+      if (Ember.empty(this.error)) {
+        return this.set('infoClass', '');
+      } else {
+        return this.set('infoClass', 'error');
+      }
     }, 'error')
   });
 
@@ -261,7 +246,9 @@
   });
 
   Ember.FormBuilder.NestedFields = Ember.CollectionView.extend(Ember.Metamorph, {
-    itemViewClass: Ember.FormBuilder.NestedField
+    itemViewClass: Ember.FormBuilder.NestedField.extend({
+      form: this.form
+    })
   });
 
 }).call(this);
@@ -278,8 +265,8 @@
     template: Ember.Handlebars.compile('{{text}}'),
     click: function() {
       var collection, content;
-      collection = this.get('collection');
-      content = this.get('content');
+      collection = this.collection;
+      content = this.content;
       return collection.removeObject(content);
     }
   });

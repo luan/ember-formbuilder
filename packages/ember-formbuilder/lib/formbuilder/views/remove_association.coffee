@@ -4,6 +4,6 @@ Ember.FormBuilder.RemoveAssociation = Ember.View.extend
   template: Ember.Handlebars.compile '{{text}}'
 
   click: ->
-    collection = @get('collection')
-    content = @get('content')
+    collection = @collection
+    content = @content
     collection.removeObject(content)
