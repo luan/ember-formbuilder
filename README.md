@@ -29,7 +29,7 @@ Bootstrap = Ember.Mixin.create
   formClass: 'form-vertical'
   submitClass: 'btn btn-success'
   cancelClass: 'btn btn-danger'
-Ember.FormBuilder.repoen(Bootstrap)
+Ember.FormBuilder.reopen(Bootstrap)
 ```
 
 ## Usage
@@ -62,7 +62,7 @@ Inside your Handlebars templates you can create forms simply using this DSL:
 
 This form sets properties inside the `user` object with the names passed to the `input` helper.
 If you don't have an object to bind the properties, well, you should. Just create an hypothetical object to bind over here, properties are created and defaulted to string if they don't exist.
-Syntax is pretty straightforward and similar to SimpleForms one.
+Syntax is pretty straightforward and similar to SimpleForms.
 The add/remove association is inspired by the Cocoon gem.
 
 ## Events
@@ -90,6 +90,8 @@ App.EditUserView = Ember.View.extend
 ```
 
 ## Client-Side Validations
+
+### Shall we? Let's just integrate it with server-side validations.
 
 You can set up validations within the object that your form is dealing with, here is an example that covers most of it:
 
