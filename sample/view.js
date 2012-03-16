@@ -1,4 +1,6 @@
-MyView = Ember.View.extend({
+window.App = Ember.Application.create();
+
+App.MyView = Ember.View.extend({
   init: function() {
     this._super();
     this.set('object',

@@ -88,22 +88,18 @@
 </pre>
             <h4>Sample</h4>
             <script type="text/x-handlebars">
-              {{#view MyView}}
-                <section>
-                  <h2>Oi</h2>
-
-                  {{#formFor "object"}}
-                    {{input "name"}}
-                    {{#fieldsFor "books"}}
-                      {{input "title"}}
-                      {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
-                    {{/fieldsFor}}
-                    {{addAssociation "books" objectClass="Ember.Object" text="Add Book" classes="btn btn-success"}}
-                  {{/formFor}}
-                  <p>
-                    Your name is {{object.name}}.
-                  </p>
-                </section>
+              {{#view App.MyView}}
+                {{#formFor "object"}}
+                  {{input "name"}}
+                  {{#fieldsFor "books"}}
+                    {{input "title"}}
+                    {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
+                  {{/fieldsFor}}
+                  {{addAssociation "books" objectClass="Ember.Object" text="Add Book" classes="btn btn-success"}}
+                {{/formFor}}
+                <p>
+                  Your name is {{object.name}}.
+                </p>
               {{/view}}
             </script>
           </section>

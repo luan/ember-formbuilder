@@ -1,7 +1,7 @@
 Ember.FormBuilder.RemoveAssociation = Ember.View.extend
-  tagName: ''
+  tagName: 'a'
   classNameBindings: ['classes']
-  template: Ember.Handlebars.compile '<a href="#" {{action "click"}}>{{text}}</a>'
+  template: Ember.Handlebars.compile '{{text}}'
 
   click: ->
     collection = @get('collection')

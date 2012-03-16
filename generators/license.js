@@ -1,6 +1,6 @@
 // ==========================================================================
-// Project:  Ember Data
-// Copyright: ©2011 Living Social Inc. and contributors.
+// Project:  Ember FormBuilder
+// Copyright: ©2012 Luan Santos. and contributors.
 // License:   Licensed under MIT license (see license.js)
 // ==========================================================================
 

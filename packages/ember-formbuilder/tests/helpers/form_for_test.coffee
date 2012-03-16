@@ -11,7 +11,7 @@ module "formFor Helper"
       template: Ember.Handlebars.compile '
         <section>
           {{#formFor "object"}}
-            {{input "name" label="cebolas"}}
+            {{input "name"}}
           {{/formFor}}
           
           <span id="name">{{object.name}}</span>
@@ -46,3 +46,4 @@ test "inputs with bindings", ->
     
   ok object.get('name') is 'Changed Again', "bindings should be bound both sides"
   ok $('#name').text() is 'Changed Again', "binds to all instances"
+
