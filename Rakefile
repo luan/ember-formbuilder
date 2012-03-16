@@ -86,7 +86,12 @@ distributions = {
 distributions.each do |name, libraries|
   # Strip out require lines. For the interim, requires are
   # precomputed by the compiler so they are no longer necessary at runtime.
-  rm "dist/#{name}.js"
+  begin
+    rm "dist/#{name}.js"
+    rm "dist/#{name}.min.js"
+  rescue
+  end
+  
   file "dist/#{name}.js" => :build do
     puts "Generating #{name}.js"
 

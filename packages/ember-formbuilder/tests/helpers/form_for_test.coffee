@@ -1,52 +1,48 @@
-get = Ember.get
-set = Ember.set
-getPath = Ember.getPath
-
 view = null
 object = null
 
-delay = (ms, func) -> setTimeout func, ms
-
-appendView = (v) ->
-  Ember.run -> v.appendTo('#qunit-fixture')
+appendView = ->
+  Ember.run -> view.appendTo('#qunit-fixture')
 
 module "formFor Helper"
   setup: ->
     object = Ember.Object.create()
-    window.TemplateTests = Ember.Namespace.create()
+    view = Ember.View.create
+      template: Ember.Handlebars.compile '
+        <section>
+          {{#formFor "object"}}
+            {{input "name" label="cebolas"}}
+          {{/formFor}}
+          
+          <span id="name">{{object.name}}</span>
+        </section>
+      '
+    view.set 'object', object
+    appendView()
 
   teardown: ->
     view.destroy() if view
     object.destroy() if object
-    window.TemplateTests = undefined
 
 test "basic formFor call for object", ->
-  view = Ember.View.create
-    template: Ember.Handlebars.compile '<section>{{formFor "object"}}</section>'
-  view.set 'object', object
-
-  Ember.run ->
-    appendView(view)
-
   ok /<section>.*<form.*<\/section>.*/.test(view.$().html()), "form should be correctly set"
+  
+test "input label", ->
+  ok view.$('form label').text().trim() is 'Name', "should have default label"
+  ok view.$('form label').attr('for') is view.$('form input').attr('id'), "should be for the given input"
 
-test "inputs formFor with bindings", ->
-  view = Ember.View.create
-    template: Ember.Handlebars.compile '
-      <section>
-        {{#formFor "object"}}
-          {{input "name"}}
-        {{/formFor}}
-      </section>
-    '
-  view.set 'object', object
-
-  Ember.run ->
-    appendView(view)
-
+test "inputs with bindings", ->
   ok /<section>.*<form.*<\/section>.*/.test(view.$().html()), "form should be correctly set"
   ok view.$('form input').length > 0, "should have inputs"
 
   Ember.run ->
     object.set('name', 'My Name')
-  ok view.$('form input').val() == 'My Name', "bindings should be bound"
+    
+  ok view.$('form input').val() is 'My Name', "bindings should be bound"
+  
+  Ember.run ->
+    ok view.$('form input').val('Changed Again')
+    Ember.View.views[view.$('form input').attr('id')].change()
+    
+  ok object.get('name') is 'Changed Again', "bindings should be bound both sides"
+  ok $('#name').text() is 'Changed Again', "binds to all instances"

@@ -1,17 +1,15 @@
-get = Ember.get
-set = Ember.set
-getPath = Ember.getPath
-
 view = null
 object = null
 
-delay = (ms, func) -> setTimeout func, ms
+Ember.FormBuilder.AddAssociation.reopen(tagName: 'span')
+Ember.FormBuilder.RemoveAssociation.reopen(tagName: 'span')
 
-appendView = (v) ->
-  Ember.run -> v.appendTo('#qunit-fixture')
+appendView = ->
+  Ember.run -> view.appendTo('#qunit-fixture')
 
-module "formFor Helper"
+module "fieldsFor Helper"
   setup: ->
+
     object = Ember.Object.create
       books: Ember.ArrayProxy.create
         content: [
@@ -32,21 +30,16 @@ module "formFor Helper"
         </section>
       '
     view.set 'object', object
+    appendView()
 
   teardown: ->
     view.destroy() if view
     object.destroy() if object
 
-test "inputs fieldsFor", ->
-  Ember.run ->
-    appendView(view)
-
+test "inputs", ->
   ok view.$('form div input').length is 2, "should have 2 nested divs"
 
 test "bindings", ->
-  Ember.run ->
-    appendView(view)
-
   ok view.$('form div input').first().val() is 'Book #1', "values bind to correct child"
   ok view.$('form div input').last().val() is 'Book #2', "values bind to correct child"
 
@@ -60,10 +53,7 @@ test "bindings", ->
   ok view.$('form div input').last().val() isnt 'Changed #1', "values DOESNT bind to wrong child"
 
 test "add associations", ->
-  Ember.run ->
-    appendView(view)
-
-  link = view.$('form a').last()
+  link = view.$('form span').last()
 
   ok link.hasClass('btn-success'), "should have the class specified"
   ok link.text() is 'Add Book', "should have a link to add association"
@@ -74,10 +64,7 @@ test "add associations", ->
   ok view.$('form div input').length is 3, "should have 3 nested divs"
 
 test "remove associations", ->
-  Ember.run ->
-    appendView(view)
-
-  link = view.$('form a').first()
+  link = view.$('form span').first()
 
   ok link.hasClass('btn-danger'), "should have the class specified"
   ok link.text() is 'Remove Book', "should have a link to remove association"

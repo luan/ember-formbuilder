@@ -1,9 +1,4 @@
-get = Ember.get
-set = Ember.set
-getPath = Ember.getPath
-
 input = null
-delay = (ms, func) -> setTimeout func, ms
 
 appendView = (v) ->
   Ember.run -> v.appendTo('#qunit-fixture')

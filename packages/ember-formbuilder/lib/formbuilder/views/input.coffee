@@ -2,7 +2,7 @@ Ember.FormBuilder.Input = Ember.View.extend
   tagName: Ember.FormBuilder.wrapperTag
   classNameBindings: ['wrapperClass', 'infoClass']
   inputClass: ''
-  name: ''
+  label: ''
 
   init: () ->
     @_super()
@@ -19,12 +19,12 @@ Ember.FormBuilder.Input = Ember.View.extend
 
     @set 'template', Ember.Handlebars.compile '
       {{#if showLabel}}
-        <label class="string required control-label" for="function_name">
-          <abbr title="required">*</abbr> {{name}}
+        <label class="string required control-label" for="' + Ember.guidFor(this) + 'input">
+          {{label}}
         </label>
       {{/if}}
       {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}
-        {{view ' + @inputView + ' valueBinding="content.value"}}
+        {{view ' + @inputView + ' id="' + Ember.guidFor(this) + 'input" class=content.inputClass valueBinding="content.value"}}
         {{#if content.error}}
           {{view Ember.FormBuilder.Error text=content.error}}
         {{/if}}

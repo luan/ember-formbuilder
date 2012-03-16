@@ -1,6 +1,5 @@
 
 (function(exports) {
-(function() {
 
   Ember.FormBuilder = Ember.Namespace.create({
     wrapperTag: 'div',
@@ -40,13 +39,10 @@
 
 
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.Handlebars.registerHelper("addAssociation", function(property, options) {
     ember_assert("The addAssociation helper only takes a single argument", arguments.length <= 2);
@@ -55,13 +51,10 @@
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.AddAssociation', options);
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.Handlebars.registerHelper("fieldsFor", function(property, options) {
     ember_assert("The fieldsFor helper only takes a single argument", arguments.length <= 2);
@@ -70,13 +63,10 @@
     return Ember.Handlebars.helpers.collection.call(this, 'Ember.FormBuilder.NestedFields', options);
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.Handlebars.registerHelper("formFor", function(object, options) {
     ember_assert("The formFor helper only takes a single argument", arguments.length <= 2);
@@ -85,28 +75,30 @@
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.Form', options);
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.Handlebars.registerHelper("input", function(property, options) {
+    var words;
     ember_assert("The input helper only takes a single argument", arguments.length <= 2);
+    if (!options.hash.label) {
+      words = Ember.String.underscore(property).split('_');
+      words = words.map(function(word) {
+        return word.charAt(0).toUpperCase() + word.substring(1);
+      });
+      options.hash.label = words.join(' ');
+    }
     options.hash.valueBinding = "content." + property;
     options.hash.preserveContext = true;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.Input', options);
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.Handlebars.registerHelper("removeAssociation", function(property, options) {
     ember_assert("The removeAssociation helper only takes a single argument", arguments.length <= 2);
@@ -116,47 +108,37 @@
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.RemoveAssociation', options);
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.FormBuilder.Info = Ember.View.extend({
     classNameBindings: ['classes'],
     template: Ember.Handlebars.compile('{{text}}')
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.FormBuilder.AddAssociation = Ember.View.extend({
-    tagName: 'x',
+    tagName: '',
     classNameBindings: ['classes'],
-    template: Ember.Handlebars.compile('{{text}}'),
-    click: function(event) {
+    template: Ember.Handlebars.compile('<a href="#" {{action "click"}}>{{text}}</a>'),
+    click: function() {
       var cls, content;
       content = this.get('content');
       cls = Ember.getPath(this.get('objectClass'));
-      content.pushObject(cls.create());
-      return console.log('AddAssociation');
+      return content.pushObject(cls.create());
     }
   });
-
-}).call(this);
 
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.FormBuilder.Error = Ember.FormBuilder.Info.extend({
     init: function() {
@@ -166,26 +148,20 @@
     }
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.FormBuilder.Form = Ember.View.extend({
     tagName: 'form',
     classNameBindings: ['classes']
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.FormBuilder.Help = Ember.FormBuilder.Info.extend({
     init: function() {
@@ -195,19 +171,16 @@
     }
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.FormBuilder.Input = Ember.View.extend({
     tagName: Ember.FormBuilder.wrapperTag,
     classNameBindings: ['wrapperClass', 'infoClass'],
     inputClass: '',
-    name: '',
+    label: '',
     init: function() {
       this._super();
       this.set('inputView', this.get('inputView') || 'Ember.TextField');
@@ -219,12 +192,12 @@
       if (Ember.empty(this.get('value'))) this.set('value', '');
       return this.set('template', Ember.Handlebars.compile('\
       {{#if showLabel}}\
-        <label class="string required control-label" for="function_name">\
-          <abbr title="required">*</abbr> {{name}}\
+        <label class="string required control-label" for="' + Ember.guidFor(this) + 'input">\
+          {{label}}\
         </label>\
       {{/if}}\
       {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}\
-        {{view ' + this.inputView + ' valueBinding="content.value"}}\
+        {{view ' + this.inputView + ' id="' + Ember.guidFor(this) + 'input" class=content.inputClass valueBinding="content.value"}}\
         {{#if content.error}}\
           {{view Ember.FormBuilder.Error text=content.error}}\
         {{/if}}\
@@ -239,13 +212,10 @@
     }, 'error')
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.FormBuilder.NestedField = Ember.View.extend(Ember.Metamorph, {
     tagName: 'div',
@@ -256,18 +226,15 @@
     itemViewClass: Ember.FormBuilder.NestedField
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
   Ember.FormBuilder.RemoveAssociation = Ember.View.extend({
-    tagName: 'a',
+    tagName: '',
     classNameBindings: ['classes'],
-    template: Ember.Handlebars.compile('{{text}}'),
+    template: Ember.Handlebars.compile('<a href="#" {{action "click"}}>{{text}}</a>'),
     click: function() {
       var collection, content;
       collection = this.get('collection');
@@ -276,16 +243,11 @@
     }
   });
 
-}).call(this);
-
 })({});
 
 
 (function(exports) {
-(function() {
 
 
-
-}).call(this);
 
 })({});
