@@ -29,7 +29,7 @@ Bootstrap = Ember.Mixin.create
   formClass: 'form-vertical'
   submitClass: 'btn btn-success'
   cancelClass: 'btn btn-danger'
-Ember.FormBuilder.addMixin(Bootstrap, "bootstrap")
+Ember.FormBuilder.pushMixin(Bootstrap, "bootstrap")
 ```
 
 ## Usage
