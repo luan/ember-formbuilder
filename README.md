@@ -29,7 +29,7 @@ Bootstrap = Ember.Mixin.create
   formClass: 'form-vertical'
   submitClass: 'btn btn-success'
   cancelClass: 'btn btn-danger'
-Ember.FormBuilder.reopen(Bootstrap)
+Ember.FormBuilder.addMixin(Bootstrap, "bootstrap")
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ Ember.FormBuilder.reopen(Bootstrap)
 Inside your Handlebars templates you can create forms simply using this DSL:
 
 ```html
-{{#formFor "user" classes="form-horizontal"}}
+{{#formFor "user" mixin="bootstrap" classes="form-horizontal"}}
   <legend>User Data:</legend>
 
   {{input "name" hint="Type your name"}}
