@@ -40,7 +40,6 @@ module "formFor Helper with mixins"
     object.destroy() if object
 
 test "mixin properties", ->
-  console.log view.$('form')
   ok view.$('form').hasClass('form'), "form class"
   ok view.$('form section.custom-group').length > 0, "wrapper tag"
   ok view.$('form section.custom-group span.custom-controls').length > 0, "input wrapper tag"

@@ -8,9 +8,11 @@ Bootstrap = Ember.Mixin.create
   helpClass: 'help-block'
   errorTag: 'span'
   errorClass: 'help-inline'
-  formClass: 'form-vertical'
+  formClass: ''
   submitClass: 'btn btn-success'
   cancelClass: 'btn btn-danger'
+  submitTag: 'button'
+  cancelTag: 'a'
 
 Ember.FormBuilder = Ember.Namespace.create
   mixins:
@@ -24,11 +26,15 @@ Ember.FormBuilder = Ember.Namespace.create
 
 require "ember-formbuilder/formbuilder/views/form"
 require "ember-formbuilder/formbuilder/views/input"
+require "ember-formbuilder/formbuilder/views/submit"
+require "ember-formbuilder/formbuilder/views/cancel"
 require "ember-formbuilder/formbuilder/views/add_association"
 require "ember-formbuilder/formbuilder/views/remove_association"
 require "ember-formbuilder/formbuilder/views/nested_fields"
 require "ember-formbuilder/formbuilder/helpers/form_for"
 require "ember-formbuilder/formbuilder/helpers/fields_for"
 require "ember-formbuilder/formbuilder/helpers/input"
+require "ember-formbuilder/formbuilder/helpers/submit"
+require "ember-formbuilder/formbuilder/helpers/cancel"
 require "ember-formbuilder/formbuilder/helpers/add_association"
 require "ember-formbuilder/formbuilder/helpers/remove_association"

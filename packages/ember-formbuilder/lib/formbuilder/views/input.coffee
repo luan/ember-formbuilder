@@ -4,7 +4,7 @@ Ember.FormBuilder.Input = Ember.View.extend
   inputClass: ''
   label: ''
 
-  init: () ->
+  init: ->
     @_super()
     @set 'inputView', @inputView or 'Ember.TextField'
 

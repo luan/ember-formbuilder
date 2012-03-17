@@ -10,13 +10,23 @@ module "formFor Helper"
     view = Ember.View.create
       template: Ember.Handlebars.compile '
         <section>
-          {{#formFor "object"}}
+          {{#formFor "object" classes="form-horizontal"}}
             {{input "name"}}
+
+            {{submit "Save"}}
+            {{cancel "Save"}}
           {{/formFor}}
           
           <span id="name">{{object.name}}</span>
         </section>
       '
+
+      objectSubmit: ->
+        @set 'submitFired', true
+
+      objectCancel: ->
+        @set 'cancelFired', true
+
     view.set 'object', object
     appendView()
 
@@ -26,7 +36,36 @@ module "formFor Helper"
 
 test "basic formFor call for object", ->
   ok /<section>.*<form.*<\/section>.*/.test(view.$().html()), "form should be correctly set"
-  
+ 
+test "form classes is set", ->
+  ok view.$('form').hasClass('form-horizontal')
+
+test "submit and cancel looks like they should", ->
+  submit = view.$('form .submit-button')
+  cancel = view.$('form .cancel-button')
+
+  ok submit.hasClass('btn btn-success'), 'submit classes'
+  ok cancel.hasClass('btn btn-danger'), 'cancel classes'
+
+  ok submit.get(0).tagName.toLowerCase() is 'button', 'submit tagName'
+  ok cancel.get(0).tagName.toLowerCase() is 'a', 'cancel tagName'
+
+test "submit fires event on the parent view", ->
+  submit = view.$('form .submit-button')
+
+  Ember.run ->
+    Ember.View.views[submit.attr('id')].click()
+
+  ok view.submitFired?
+
+test "cancel fires event on the parent view", ->
+  cancel = view.$('form .cancel-button')
+
+  Ember.run ->
+    Ember.View.views[cancel.attr('id')].click()
+
+  ok view.cancelFired?
+
 test "input label", ->
   ok view.$('form label').text().trim() is 'Name', "should have default label"
   ok view.$('form label').attr('for') is view.$('form input').attr('id'), "should be for the given input"
