@@ -47,8 +47,8 @@ test "submit and cancel looks like they should", ->
   ok submit.hasClass('btn btn-success'), 'submit classes'
   ok cancel.hasClass('btn btn-danger'), 'cancel classes'
 
-  ok submit.get(0).tagName.toLowerCase() is 'button', 'submit tagName'
-  ok cancel.get(0).tagName.toLowerCase() is 'a', 'cancel tagName'
+  equal submit.get(0).tagName.toLowerCase(), 'button', 'submit tagName'
+  equal cancel.get(0).tagName.toLowerCase(), 'a', 'cancel tagName'
 
 test "submit fires event on the parent view", ->
   submit = view.$('form .submit-button')
@@ -67,8 +67,8 @@ test "cancel fires event on the parent view", ->
   ok view.cancelFired?
 
 test "input label", ->
-  ok view.$('form label').text().trim() is 'Name', "should have default label"
-  ok view.$('form label').attr('for') is view.$('form input').attr('id'), "should be for the given input"
+  equal view.$('form label').text().trim(), 'Name', "should have default label"
+  equal view.$('form label').attr('for'), view.$('form input').attr('id'), "should be for the given input"
 
 test "inputs with bindings", ->
   ok /<section>.*<form.*<\/section>.*/.test(view.$().html()), "form should be correctly set"
@@ -77,11 +77,11 @@ test "inputs with bindings", ->
   Ember.run ->
     object.set('name', 'My Name')
     
-  ok view.$('form input').val() is 'My Name', "bindings should be bound"
+  equal view.$('form input').val(), 'My Name', "bindings should be bound"
   
   Ember.run ->
     ok view.$('form input').val('Changed Again')
     Ember.View.views[view.$('form input').attr('id')].change()
     
-  ok object.get('name') is 'Changed Again', "bindings should be bound both sides"
-  ok $('#name').text() is 'Changed Again', "binds to all instances"
+  equal object.get('name'), 'Changed Again', "bindings should be bound both sides"
+  equal $('#name').text(), 'Changed Again', "binds to all instances"

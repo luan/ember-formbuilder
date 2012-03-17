@@ -44,7 +44,7 @@ Inside your Handlebars templates you can create forms simply using this DSL:
   {{input "birthday" as="date"}}
   {{input "another_date" as="string" mask="##/##/####" component="datepicker"}}
   {{input "email" placeholder="mail@example.com"}}
-  {{input "gender" as="select" collection=App.genders}}
+  {{input "gender" as="select" collectionBinding="App.genders"}}
   {{input "categories" as="checkboxes" collectionBinding="App.categoriesController"}}
   {{input "option" as="radio_buttons" collectionBinding="App.optionsController"}}
 
