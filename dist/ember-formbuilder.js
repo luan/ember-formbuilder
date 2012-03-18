@@ -13,9 +13,11 @@
     helpClass: 'help-block',
     errorTag: 'span',
     errorClass: 'help-inline',
-    formClass: 'form-vertical',
+    formClass: '',
     submitClass: 'btn btn-success',
-    cancelClass: 'btn btn-danger'
+    cancelClass: 'btn btn-danger',
+    submitTag: 'button',
+    cancelTag: 'a'
   });
 
   Ember.FormBuilder = Ember.Namespace.create({
@@ -50,6 +52,14 @@
 
 
 
+
+
+
+
+
+
+
+
 }).call(this);
 
 })({});
@@ -60,7 +70,7 @@
 
   Ember.Handlebars.registerHelper("addAssociation", function(property, options) {
     ember_assert("The addAssociation helper only takes a single argument", arguments.length <= 2);
-    options.hash.contentBinding = "bindingContext.object." + property;
+    options.hash.contentBinding = "content." + property;
     options.hash.preserveContext = false;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.AddAssociation', options);
   });
@@ -73,12 +83,36 @@
 (function(exports) {
 (function() {
 
-  Ember.Handlebars.registerHelper("fieldsFor", function(property, options) {
-    ember_assert("The fieldsFor helper only takes a single argument", arguments.length <= 2);
-    options.hash.contentBinding = "bindingContext.object." + property;
+  Ember.Handlebars.registerHelper("cancel", function(text, options) {
+    var _ref, _ref2;
+    ember_assert("The cancel helper only takes a single argument", arguments.length <= 2);
+    if (!options) {
+      options = text;
+      if (!options.hash.text) {
+        text = ((_ref = Ember.FormBuilder.STRINGS) != null ? (_ref2 = _ref[this.objectName]) != null ? _ref2.cancel : void 0 : void 0) || 'Cancel';
+      }
+    }
     options.hash.preserveContext = false;
     options.hash.form = this;
-    return Ember.Handlebars.helpers.collection.call(this, 'Ember.FormBuilder.NestedFields', options);
+    options.hash.text = text;
+    return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.Cancel', options);
+  });
+
+}).call(this);
+
+})({});
+
+
+(function(exports) {
+(function() {
+
+  Ember.Handlebars.registerHelper("fieldsFor", function(property, options) {
+    ember_assert("The fieldsFor helper only takes a single argument", arguments.length <= 2);
+    options.hash.collectionBinding = "content." + property;
+    options.hash["class"] = "nested-" + property;
+    options.hash.preserveContext = false;
+    options.hash.form = this;
+    return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.NestedFields', options);
   });
 
 }).call(this);
@@ -92,6 +126,8 @@
   Ember.Handlebars.registerHelper("formFor", function(object, options) {
     ember_assert("The formFor helper only takes a single argument", arguments.length <= 2);
     options.hash.contentBinding = object;
+    options.hash.objectName = object;
+    options.hash.parentView = this;
     options.hash.preserveContext = true;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.Form', options);
   });
@@ -105,8 +141,18 @@
 (function() {
 
   Ember.Handlebars.registerHelper("input", function(property, options) {
-    var words;
+    var attribute, words, _i, _len, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
     ember_assert("The input helper only takes a single argument", arguments.length <= 2);
+    _ref = Ember.String.w('label hint placeholder');
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      attribute = _ref[_i];
+      if (!options.hash[attribute]) {
+        options.hash[attribute] = (_ref2 = Ember.FormBuilder.STRINGS) != null ? (_ref3 = _ref2[this.objectName]) != null ? (_ref4 = _ref3[attribute + 's']) != null ? _ref4[property] : void 0 : void 0 : void 0;
+        if (!options.hash[attribute]) {
+          options.hash[attribute] = (_ref5 = Ember.FormBuilder.STRINGS) != null ? (_ref6 = _ref5.defaults) != null ? (_ref7 = _ref6[attribute + 's']) != null ? _ref7[property] : void 0 : void 0 : void 0;
+        }
+      }
+    }
     if (!options.hash.label) {
       words = Ember.String.underscore(property).split('_');
       words = words.map(function(word) {
@@ -131,12 +177,45 @@
   Ember.Handlebars.registerHelper("removeAssociation", function(property, options) {
     ember_assert("The removeAssociation helper only takes a single argument", arguments.length <= 2);
     options.hash.contentBinding = "content";
-    options.hash.collectionBinding = "bindingContext.content." + property;
+    options.hash.collectionBinding = "content." + property;
     options.hash.preserveContext = true;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.RemoveAssociation', options);
   });
 
 }).call(this);
+
+})({});
+
+
+(function(exports) {
+(function() {
+
+  Ember.Handlebars.registerHelper("submit", function(text, options) {
+    var _ref, _ref2;
+    ember_assert("The submit helper only takes a single argument", arguments.length <= 2);
+    if (!options) {
+      options = text;
+      if (!options.hash.text) {
+        text = ((_ref = Ember.FormBuilder.STRINGS) != null ? (_ref2 = _ref[this.objectName]) != null ? _ref2.submit : void 0 : void 0) || 'Submit';
+      }
+    }
+    options.hash.preserveContext = false;
+    options.hash.form = this;
+    options.hash.text = text;
+    return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.Submit', options);
+  });
+
+}).call(this);
+
+})({});
+
+
+(function(exports) {
+
+  Ember.FormBuilder.Info = Ember.View.extend({
+    classNameBindings: ['classes'],
+    template: Ember.Handlebars.compile('{{text}}')
+  });
 
 })({});
 
@@ -164,6 +243,41 @@
 (function(exports) {
 (function() {
 
+  Ember.FormBuilder.Cancel = Ember.View.extend({
+    classNameBindings: ['classes'],
+    template: Ember.Handlebars.compile('{{text}}'),
+    init: function() {
+      this._super();
+      this.set('tagName', this.tagName || this.form.cancelTag);
+      this.set('cancelClass', this.cancelClass || this.form.cancelClass);
+      return this.set('classes', "" + this.cancelClass + " cancel-button");
+    },
+    click: function(event) {
+      return this.form.parentView["" + this.form.objectName + "Cancel"](event);
+    }
+  });
+
+}).call(this);
+
+})({});
+
+
+(function(exports) {
+
+  Ember.FormBuilder.Error = Ember.FormBuilder.Info.extend({
+    init: function() {
+      this._super();
+      this.set('classes', this.get('classes') || Ember.FormBuilder.errorClass);
+      return this.set('tagName', this.get('tagName') || Ember.FormBuilder.errorTag);
+    }
+  });
+
+})({});
+
+
+(function(exports) {
+(function() {
+
   Ember.FormBuilder.Form = Ember.View.extend({
     tagName: 'form',
     classNameBindings: ['classes', 'formClass'],
@@ -175,6 +289,19 @@
   });
 
 }).call(this);
+
+})({});
+
+
+(function(exports) {
+
+  Ember.FormBuilder.Help = Ember.FormBuilder.Info.extend({
+    init: function() {
+      this._super();
+      this.set('classes', this.get('classes') || Ember.FormBuilder.helpClass);
+      return this.set('tagName', this.get('tagName') || Ember.FormBuilder.helpTag);
+    }
+  });
 
 })({});
 
@@ -209,7 +336,7 @@
         </label>\
       {{/if}}\
       {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}\
-        {{view ' + this.inputView + ' id="' + Ember.guidFor(this) + 'input" class=content.inputClass valueBinding="content.value"}}\
+        ' + this.field() + '\
         {{#if content.error}}\
           {{#view Ember.View class=content.errorClass tagNameBinding="content.errorTag" contentBinding="content"}}\
             {{content.error}}\
@@ -229,7 +356,31 @@
       } else {
         return this.set('infoClass', 'error');
       }
-    }, 'error')
+    }, 'error'),
+    field: function() {
+      switch (this.as) {
+        case "select":
+          return this.selectTag();
+        default:
+          return this.textInput();
+      }
+    },
+    textInput: function() {
+      return '{{view ' + this.inputView + ' id="' + Ember.guidFor(this) + 'input"\
+               placeholder=content.placeholder class=content.inputClass\
+               valueBinding="content.value"}} ';
+    },
+    selectTag: function() {
+      var select;
+      console.log(this.collectionBinding, "Binding");
+      console.log(this.collection, "Collection");
+      select = '{{view Ember.Select viewName="select"\
+                contentBinding="' + this.collection + '"\
+                optionLabelPath="firstName"\
+                optionValuePath="id"';
+      if (this.prompt) select += 'prompt="' + this.prompt + '"';
+      return select += '}}';
+    }
   });
 
 }).call(this);
@@ -240,13 +391,16 @@
 (function(exports) {
 (function() {
 
-  Ember.FormBuilder.NestedField = Ember.View.extend(Ember.Metamorph, {
-    tagName: 'div',
-    classNameBindings: ['classes', ':nested-fields']
-  });
-
-  Ember.FormBuilder.NestedFields = Ember.CollectionView.extend(Ember.Metamorph, {
-    itemViewClass: Ember.FormBuilder.NestedField.extend({
+  Ember.FormBuilder.NestedFields = Ember.CollectionView.extend({
+    classNameBindings: ['classes', 'nestedClass'],
+    didInsertElement: function() {
+      return console.log(this.morph);
+    },
+    collectionChanged: Ember.observer(function() {
+      return this.set('content', Ember.makeArray(this.collection));
+    }, 'collection'),
+    itemViewClass: Ember.View.extend({
+      classNameBindings: ['classes', ':nested-fields'],
       form: this.form
     })
   });
@@ -268,6 +422,28 @@
       collection = this.collection;
       content = this.content;
       return collection.removeObject(content);
+    }
+  });
+
+}).call(this);
+
+})({});
+
+
+(function(exports) {
+(function() {
+
+  Ember.FormBuilder.Submit = Ember.View.extend({
+    classNameBindings: ['classes'],
+    template: Ember.Handlebars.compile('{{text}}'),
+    init: function() {
+      this._super();
+      this.set('tagName', this.tagName || this.form.submitTag);
+      this.set('submitClass', this.submitClass || this.form.submitClass);
+      return this.set('classes', "" + this.submitClass + " submit-button");
+    },
+    click: function(event) {
+      return this.form.parentView["" + this.form.objectName + "Submit"](event);
     }
   });
 

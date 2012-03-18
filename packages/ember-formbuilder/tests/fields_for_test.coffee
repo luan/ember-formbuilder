@@ -8,6 +8,9 @@ module "fieldsFor Helper"
   setup: ->
     objects = []
     object = Ember.Object.create
+      writer: Ember.Object.create
+        firstName: 'Wilbur'
+        lastName: 'Smith'
       books: Ember.ArrayProxy.create
         content: [
           Ember.Object.create(title: 'Book #1')
@@ -17,16 +20,24 @@ module "fieldsFor Helper"
     view = Ember.View.create
       template: Ember.Handlebars.compile '
         <section>
-          {{#formFor "object"}}
-            {{#fieldsFor "books"}}
-              {{input "title"}}
-              {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
-            {{/fieldsFor}}
+          {{#formFor "myObject"}}
+            <div class="writer">
+              {{#fieldsFor "writer"}}
+                {{input "firstName"}}
+                {{input "lastName"}}
+              {{/fieldsFor}}
+            </div>
+            <div class="books">
+              {{#fieldsFor "books"}}
+                {{input "title"}}
+                {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
+              {{/fieldsFor}}
+            </div>
             {{addAssociation "books" objectClass="Ember.Object" text="Add Book" classes="btn btn-success"}}
           {{/formFor}}
         </section>
       '
-    view.set 'object', object
+    view.set 'myObject', object
     appendView()
 
   teardown: ->
@@ -34,42 +45,54 @@ module "fieldsFor Helper"
     object.destroy() if object
 
 test "inputs", ->
-  equal view.$('form div input').length, 2, "should have 2 nested divs"
+  equal view.$('form div.books input').length, 2
+  equal view.$('form div.writer input').length, 2
+  equal view.$('form div.writer div.control-group').length, 2
 
 test "bindings", ->
-  equal view.$('form div input').first().val(), 'Book #1', "values bind to correct child"
-  equal view.$('form div input').last().val(), 'Book #2', "values bind to correct child"
+  equal view.$('form div.books input').first().val(), 'Book #1'
+  equal view.$('form div.books input').last().val(), 'Book #2'
 
   Ember.run ->
     books = object.get('books')
     books.objectAt(0).set('title', 'Changed #1')
     books.pushObject Ember.Object.create(title: 'Book #3')
 
-  equal view.$('form div input').length, 3, "should have 3 nested divs"
-  equal view.$('form div input').first().val(), 'Changed #1', "values bind to correct child"
-  notEqual view.$('form div input').last().val(), 'Changed #1', "values DOESNT bind to wrong child"
+  equal view.$('form div.books input').length, 3
+  equal view.$('form div.books input').first().val(), 'Changed #1'
+  notEqual view.$('form div.books input').last().val(), 'Changed #1'
 
 test "add associations", ->
   link = view.$('form a').last()
 
-  ok link.hasClass('btn-success'), "should have the class specified"
-  ok link.text() is 'Add Book', "should have a link to add association"
+  ok link.hasClass('btn-success')
+  ok link.text() is 'Add Book'
 
   Ember.run ->
     Ember.View.views[link.attr('id')].click()
 
-  equal view.$('form div input').length, 3, "should have 3 nested divs"
+  equal view.$('form div.books input').length, 3
 
 test "remove associations", ->
   link = view.$('form a').first()
 
-  ok link.hasClass('btn-danger'), "should have the class specified"
-  equal link.text(), 'Remove Book', "should have a link to remove association"
+  ok link.hasClass('btn-danger')
+  equal link.text(), 'Remove Book'
 
   Ember.run ->
     Ember.View.views[link.attr('id')].click()
 
-  equal view.$('form div input').length, 1, "should have 1 nested divs"
+  equal view.$('form div.books input').length, 1
 
-test "should accepted has_one association", ->
-  ok false
+test "should accepted has one association", ->
+  equal view.$('form div.writer input').first().val(), 'Wilbur'
+  equal view.$('form div.writer input').last().val(), 'Smith'
+
+  Ember.run ->
+    writer = object.get('writer')
+    writer.set('firstName', 'Changed #1')
+
+  equal view.$('form div.writer input').length, 2
+  equal view.$('form div.writer input').first().val(), 'Changed #1'
+  notEqual view.$('form div.writer input').last().val(), 'Changed #1'
+

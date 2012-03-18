@@ -16,3 +16,4 @@ App.MyView = Ember.View.extend({
     window.object = this.get('object');
   }
 });
+
