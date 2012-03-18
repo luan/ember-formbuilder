@@ -70,3 +70,5 @@ test "remove associations", ->
 
   ok view.$('form div input').length is 1, "should have 1 nested divs"
 
+test "should accepted has_one association", ->
+  ok false

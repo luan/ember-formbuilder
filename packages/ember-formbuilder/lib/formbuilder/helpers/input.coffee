@@ -5,7 +5,7 @@ Ember.Handlebars.registerHelper "input", (property, options) ->
     words = Ember.String.underscore(property).split('_')
     words = words.map (word) ->
       word.charAt(0).toUpperCase() + word.substring(1)
-  
+
     options.hash.label = words.join(' ')
   options.hash.valueBinding = "content.#{property}"
   options.hash.preserveContext = true

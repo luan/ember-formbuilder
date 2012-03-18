@@ -12,11 +12,10 @@ module "formFor Helper"
         <section>
           {{#formFor "object" classes="form-horizontal"}}
             {{input "name"}}
-
             {{submit "Save"}}
             {{cancel "Save"}}
           {{/formFor}}
-          
+
           <span id="name">{{object.name}}</span>
         </section>
       '
@@ -36,7 +35,7 @@ module "formFor Helper"
 
 test "basic formFor call for object", ->
   ok /<section>.*<form.*<\/section>.*/.test(view.$().html()), "form should be correctly set"
- 
+
 test "form classes is set", ->
   ok view.$('form').hasClass('form-horizontal')
 
@@ -76,12 +75,36 @@ test "inputs with bindings", ->
 
   Ember.run ->
     object.set('name', 'My Name')
-    
+
   ok view.$('form input').val() is 'My Name', "bindings should be bound"
-  
+
   Ember.run ->
     ok view.$('form input').val('Changed Again')
     Ember.View.views[view.$('form input').attr('id')].change()
-    
+
   ok object.get('name') is 'Changed Again', "bindings should be bound both sides"
   ok $('#name').text() is 'Changed Again', "binds to all instances"
+
+test "select tag", ->
+  people = Ember.ArrayProxy.create([{id: 1, firstName: 'Yehuda'}, {id: 1, firstName: 'Yehuda'}])
+  object = Ember.Object.create()
+
+  view = Ember.View.create
+    people: people
+    object: object
+
+    template:
+      Ember.Handlebars.compile '
+        <section>
+          {{#formFor "object" classes="form-horizontal"}}
+            {{input "person" as="select" collectionBinding="people" prompt="Please select"}}
+          {{/formFor}}
+        </section>
+    '
+
+  appendView()
+
+  console.log view.$("form select")
+  ok view.$("form select").length > 0, "should have select tag"
+  equal(view.$("form select").val(), 'Please select', "By default, the prompt is selected in the DOM")
+  equal(view.$("form select").find('option').length, 2, "Options were rendered")

@@ -22,7 +22,7 @@ Ember.FormBuilder.Input = Ember.View.extend
 
     @set 'value', '' if Ember.empty(@value)
     @errorChanged()
-    
+
     @set 'template', Ember.Handlebars.compile '
       {{#if showLabel}}
         <label {{bindAttr class="labelClass"}} for="' + Ember.guidFor(this) + 'input">
@@ -30,7 +30,7 @@ Ember.FormBuilder.Input = Ember.View.extend
         </label>
       {{/if}}
       {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}
-        {{view ' + @inputView + ' id="' + Ember.guidFor(this) + 'input" class=content.inputClass valueBinding="content.value"}}
+        ' + @field() + '
         {{#if content.error}}
           {{#view Ember.View class=content.errorClass tagNameBinding="content.errorTag" contentBinding="content"}}
             {{content.error}}
@@ -50,3 +50,27 @@ Ember.FormBuilder.Input = Ember.View.extend
     else
       @set 'infoClass', 'error'
   , 'error')
+
+  field: ->
+    switch @as
+      when "select"
+        @selectTag()
+      else
+        @textInput()
+
+  textInput: ->
+    ' {{view ' + @inputView + ' id="' + Ember.guidFor(this) +
+        'input" class=content.inputClass valueBinding="content.value"}}'
+
+  selectTag: ->
+    console.log @collectionBinding, "Binding"
+    console.log @collection, "Collection"
+
+    select = '{{view Ember.Select viewName="select"
+                contentBinding="' + @collection + '"
+                optionLabelPath="firstName"
+                optionValuePath="id"'
+    if @prompt
+      select += 'prompt="' + @prompt + '"'
+
+    select += '}}'
