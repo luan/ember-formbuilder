@@ -48,11 +48,15 @@ Inside your Handlebars templates you can create forms simply using this DSL:
   {{input "categories" as="checkboxes" collectionBinding="App.categoriesController"}}
   {{input "option" as="radio_buttons" collectionBinding="App.optionsController"}}
 
-  {{#fieldsFor "books"}}
-    {{input "title"}}
-    {{input "author"}}
-    {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
-  {{/fields}}
+  <div class="books">
+    {{#fieldsFor "books"}}
+      <div class="book">
+        {{input "title"}}
+        {{input "author"}}
+        {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
+      </div>
+    {{/fieldsFor}}
+  </div>
   {{addAssociation "books" text="Add Book" objectClass="App.Models.Book" classes="btn btn-success"}}
 
   {{submit "Save"}}
