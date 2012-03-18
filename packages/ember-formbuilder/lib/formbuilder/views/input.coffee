@@ -30,13 +30,7 @@ Ember.FormBuilder.Input = Ember.View.extend
         </label>
       {{/if}}
       {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}
-<<<<<<< HEAD
         ' + @field() + '
-=======
-        {{view ' + @inputView + ' id="' + Ember.guidFor(this) + 'input"
-               placeholder=content.placeholder class=content.inputClass
-               valueBinding="content.value"}}
->>>>>>> d53141ca9b11689182d685635fd16bea84faeef7
         {{#if content.error}}
           {{#view Ember.View class=content.errorClass tagNameBinding="content.errorTag" contentBinding="content"}}
             {{content.error}}
@@ -65,8 +59,9 @@ Ember.FormBuilder.Input = Ember.View.extend
         @textInput()
 
   textInput: ->
-    ' {{view ' + @inputView + ' id="' + Ember.guidFor(this) +
-        'input" class=content.inputClass valueBinding="content.value"}}'
+    '{{view ' + @inputView + ' id="' + Ember.guidFor(this) + 'input"
+               placeholder=content.placeholder class=content.inputClass
+               valueBinding="content.value"}} '
 
   selectTag: ->
     console.log @collectionBinding, "Binding"

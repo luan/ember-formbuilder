@@ -75,7 +75,6 @@ test "inputs with bindings", ->
 
   Ember.run ->
     object.set('name', 'My Name')
-<<<<<<< HEAD
 
   ok view.$('form input').val() is 'My Name', "bindings should be bound"
 
@@ -109,15 +108,3 @@ test "select tag", ->
   ok view.$("form select").length > 0, "should have select tag"
   equal(view.$("form select").val(), 'Please select', "By default, the prompt is selected in the DOM")
   equal(view.$("form select").find('option').length, 2, "Options were rendered")
-=======
-    
-  equal view.$('form input').val(), 'My Name', "bindings should be bound"
-  
-  Ember.run ->
-    ok view.$('form input').val('Changed Again')
-    Ember.View.views[view.$('form input').attr('id')].change()
-    
-  equal object.get('name'), 'Changed Again', "bindings should be bound both sides"
-  equal $('#name').text(), 'Changed Again', "binds to all instances"
-
->>>>>>> d53141ca9b11689182d685635fd16bea84faeef7
