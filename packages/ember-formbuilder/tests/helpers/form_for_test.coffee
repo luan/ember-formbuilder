@@ -13,7 +13,7 @@ module "formFor Helper"
           {{#formFor "object" classes="form-horizontal"}}
             {{input "name"}}
             {{submit "Save"}}
-            {{cancel "Save"}}
+            {{cancel "Cancel"}}
           {{/formFor}}
 
           <span id="name">{{object.name}}</span>
@@ -46,8 +46,8 @@ test "submit and cancel looks like they should", ->
   ok submit.hasClass('btn btn-success'), 'submit classes'
   ok cancel.hasClass('btn btn-danger'), 'cancel classes'
 
-  ok submit.get(0).tagName.toLowerCase() is 'button', 'submit tagName'
-  ok cancel.get(0).tagName.toLowerCase() is 'a', 'cancel tagName'
+  equal submit.get(0).tagName.toLowerCase(), 'button', 'submit tagName'
+  equal cancel.get(0).tagName.toLowerCase(), 'a', 'cancel tagName'
 
 test "submit fires event on the parent view", ->
   submit = view.$('form .submit-button')
@@ -66,8 +66,8 @@ test "cancel fires event on the parent view", ->
   ok view.cancelFired?
 
 test "input label", ->
-  ok view.$('form label').text().trim() is 'Name', "should have default label"
-  ok view.$('form label').attr('for') is view.$('form input').attr('id'), "should be for the given input"
+  equal view.$('form label').text().trim(), 'Name', "should have default label"
+  equal view.$('form label').attr('for'), view.$('form input').attr('id'), "should be for the given input"
 
 test "inputs with bindings", ->
   ok /<section>.*<form.*<\/section>.*/.test(view.$().html()), "form should be correctly set"
@@ -75,6 +75,7 @@ test "inputs with bindings", ->
 
   Ember.run ->
     object.set('name', 'My Name')
+<<<<<<< HEAD
 
   ok view.$('form input').val() is 'My Name', "bindings should be bound"
 
@@ -108,3 +109,15 @@ test "select tag", ->
   ok view.$("form select").length > 0, "should have select tag"
   equal(view.$("form select").val(), 'Please select', "By default, the prompt is selected in the DOM")
   equal(view.$("form select").find('option').length, 2, "Options were rendered")
+=======
+    
+  equal view.$('form input').val(), 'My Name', "bindings should be bound"
+  
+  Ember.run ->
+    ok view.$('form input').val('Changed Again')
+    Ember.View.views[view.$('form input').attr('id')].change()
+    
+  equal object.get('name'), 'Changed Again', "bindings should be bound both sides"
+  equal $('#name').text(), 'Changed Again', "binds to all instances"
+
+>>>>>>> d53141ca9b11689182d685635fd16bea84faeef7

@@ -6,6 +6,7 @@ appendView = ->
 
 module "fieldsFor Helper"
   setup: ->
+    objects = []
     object = Ember.Object.create
       books: Ember.ArrayProxy.create
         content: [
@@ -33,20 +34,20 @@ module "fieldsFor Helper"
     object.destroy() if object
 
 test "inputs", ->
-  ok view.$('form div input').length is 2, "should have 2 nested divs"
+  equal view.$('form div input').length, 2, "should have 2 nested divs"
 
 test "bindings", ->
-  ok view.$('form div input').first().val() is 'Book #1', "values bind to correct child"
-  ok view.$('form div input').last().val() is 'Book #2', "values bind to correct child"
+  equal view.$('form div input').first().val(), 'Book #1', "values bind to correct child"
+  equal view.$('form div input').last().val(), 'Book #2', "values bind to correct child"
 
   Ember.run ->
     books = object.get('books')
     books.objectAt(0).set('title', 'Changed #1')
     books.pushObject Ember.Object.create(title: 'Book #3')
 
-  ok view.$('form div input').length is 3, "should have 3 nested divs"
-  ok view.$('form div input').first().val() is 'Changed #1', "values bind to correct child"
-  ok view.$('form div input').last().val() isnt 'Changed #1', "values DOESNT bind to wrong child"
+  equal view.$('form div input').length, 3, "should have 3 nested divs"
+  equal view.$('form div input').first().val(), 'Changed #1', "values bind to correct child"
+  notEqual view.$('form div input').last().val(), 'Changed #1', "values DOESNT bind to wrong child"
 
 test "add associations", ->
   link = view.$('form a').last()
@@ -57,18 +58,18 @@ test "add associations", ->
   Ember.run ->
     Ember.View.views[link.attr('id')].click()
 
-  ok view.$('form div input').length is 3, "should have 3 nested divs"
+  equal view.$('form div input').length, 3, "should have 3 nested divs"
 
 test "remove associations", ->
   link = view.$('form a').first()
 
   ok link.hasClass('btn-danger'), "should have the class specified"
-  ok link.text() is 'Remove Book', "should have a link to remove association"
+  equal link.text(), 'Remove Book', "should have a link to remove association"
 
   Ember.run ->
     Ember.View.views[link.attr('id')].click()
 
-  ok view.$('form div input').length is 1, "should have 1 nested divs"
+  equal view.$('form div input').length, 1, "should have 1 nested divs"
 
 test "should accepted has_one association", ->
   ok false
