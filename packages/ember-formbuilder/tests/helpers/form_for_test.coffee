@@ -14,7 +14,7 @@ module "formFor Helper"
             {{input "name"}}
 
             {{submit "Save"}}
-            {{cancel "Save"}}
+            {{cancel "Cancel"}}
           {{/formFor}}
           
           <span id="name">{{object.name}}</span>
@@ -85,3 +85,4 @@ test "inputs with bindings", ->
     
   equal object.get('name'), 'Changed Again', "bindings should be bound both sides"
   equal $('#name').text(), 'Changed Again', "binds to all instances"
+

@@ -89,6 +89,37 @@ App.EditUserView = Ember.View.extend
     # return false to disable default behavior (which is resetting the properties)
 ```
 
+## Labels, hints and placeholders
+
+You can redefine the label with the `label=` option, and so with other parameters:
+
+```html
+{{input "name" label="Su nombre"}}
+```
+
+But the most manageable and suggested way tho is to define your strings inside the `Ember.FormBuilder.STRINGS` dictionary:
+
+```coffeescript
+Ember.FormBuilder.STRINGS =
+  defaults:
+    submit: 'Submit'
+    cancel: 'Reset'
+    labels:
+      name: 'Name'
+  user:
+    submit: 'Save'
+    cancel: 'Cancel'
+    labels:
+      name: 'Name:'
+      email: 'Email:'
+    hints:
+      name: 'Type your name.'
+      email: 'Type your email.'
+    placeholders:
+      name: 'John Smith'
+      email: 'john@example.com'
+```
+
 ## Client-Side Validations
 
 ### Shall we? Let's just integrate it with server-side validations.
@@ -116,31 +147,3 @@ App.User = Ember.Object.extend
         inclusion: App.categoriesController
 ```
 
-## Labels, hints, error messages, and placeholders
-
-You can redefine the label with the `label=` option, and so with other parameters:
-
-```html
-{{input "name" label="Su nombre"}}
-```
-
-But the most manageable and suggested way tho is to define your strings inside the `Ember.FormBuilder.STRINGS` dictionary:
-
-```coffeescript
-Ember.FormBuilder.STRINGS =
-  defaults:
-    required: '*'
-    errorMessages:
-      presence: 'should be present'
-      format: 'should be valid'
-  user:
-    labels:
-      name: 'Name:'
-      email: 'Email:'
-    hints:
-      name: 'Type your name.'
-      email: 'Type your email.'
-    placeholders:
-      name: 'John Smith'
-      email: 'john@example.com'
-```
