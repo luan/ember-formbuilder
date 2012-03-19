@@ -45,6 +45,14 @@ Inside your Handlebars templates you can create forms simply using this DSL:
   {{input "another_date" as="string" mask="##/##/####" component="datepicker"}}
   {{input "email" placeholder="mail@example.com"}}
   {{input "gender" as="select" collectionBinding="App.genders"}}
+
+  {{submit "Save"}}
+  {{cancel "Reset"}}
+{{/form}}
+```
+
+Planned
+```html
   {{input "categories" as="checkboxes" collectionBinding="App.categoriesController"}}
   {{input "option" as="radio_buttons" collectionBinding="App.optionsController"}}
 
@@ -58,10 +66,6 @@ Inside your Handlebars templates you can create forms simply using this DSL:
     {{/fieldsFor}}
   </div>
   {{addAssociation "books" text="Add Book" objectClass="App.Models.Book" classes="btn btn-success"}}
-
-  {{submit "Save"}}
-  {{cancel "Reset"}}
-{{/form}}
 ```
 
 This form sets properties inside the `user` object with the names passed to the `input` helper.
@@ -122,32 +126,5 @@ Ember.FormBuilder.STRINGS =
     placeholders:
       name: 'John Smith'
       email: 'john@example.com'
-```
-
-## Client-Side Validations
-
-### Shall we? Let's just integrate it with server-side validations.
-
-You can set up validations within the object that your form is dealing with, here is an example that covers most of it:
-
-```coffeescript
-App.User = Ember.Object.extend
-  validateUppon: 'fill' # could be either 'fill' or 'submit', defaults to 'submit'
-  validate:
-    name:
-      presence: true
-      length: [2, 25]
-    email:
-      presence: true
-      email: true
-    birthday:
-      format: /\d{2}\/\d{2}\/\d{4}/
-    books:
-      length: [0, 10]
-    gender:
-      inclusion: 'male female'.w()
-    categories:
-      each:
-        inclusion: App.categoriesController
 ```
 

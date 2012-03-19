@@ -55,6 +55,10 @@ Ember.FormBuilder.Input = Ember.View.extend
     switch @as
       when "select"
         @selectTag()
+      when "checkboxes"
+        @checkboxes()
+      when "radioButtons"
+        @radioButtons()
       else
         @textInput()
 
@@ -63,6 +67,26 @@ Ember.FormBuilder.Input = Ember.View.extend
          placeholder=content.placeholder class=content.inputClass
          valueBinding="content.value"}} '
   
+  checkboxes: ->
+    '{{#each content.collection contentBinding="this.content"}}
+        <label class="checkbox">
+          {{view Ember.FormBuilder.Checkbox valueBinding="content.value"}}
+          {{label}}
+        </label>
+      {{/each}}'
+  
+  radioButtons: ->
+    group = "#{Ember.guidFor(this)}group"
+    '{{#each content.collection}}
+        <label class="radio">
+          {{view Ember.FormBuilder.RadioButton
+            optionBinding="value"
+            valueBinding="parentView.content.value"
+            group="' + group + '"}}
+          {{label}}
+        </label>
+      {{/each}}'
+
   selectTag: ->
     select = '{{view Ember.Select
                   contentBinding="content.collection"

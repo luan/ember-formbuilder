@@ -20,6 +20,8 @@ module "formFor Helper"
           {{#formFor "object" classes="form-horizontal"}}
             {{input "name"}}
             {{input "gender" as="select" collectionBinding="parentView.genders" prompt="Please select"}}
+            {{input "categories" as="checkboxes" collectionBinding="parentView.genders"}}
+            {{input "option" as="radioButtons" collectionBinding="parentView.genders"}}
 
             {{submit "Save"}}
             {{cancel "Cancel"}}
@@ -103,3 +105,22 @@ test "select tag with bindings", ->
     view.genders.pushObject Ember.Object.create(label: 'Another', value: 'an')
   
   equal(view.$("form select").find('option').length, 4, "Options were rendered")
+
+test "checkboxes with bindings", ->
+  Ember.run ->
+    box = view.$("form label.checkbox input[type='checkbox']").last()
+    box.attr 'checked', true
+    Ember.View.views[box.attr('id')].change()
+    view.genders.pushObject Ember.Object.create(label: 'Another', value: 'an')
+
+  equal(view.$("form label.checkbox input[type='checkbox']").length, 3, "checkboxes were rendered")
+
+  Ember.run ->
+    console.log view.object.categories
+    #view.object.categories
+
+test "radio buttons with bindings", ->
+  Ember.run ->
+    view.genders.pushObject Ember.Object.create(label: 'Another', value: 'an')
+  
+  equal(view.$("form label.radio input[type='radio']").length, 3, "radios were rendered")
