@@ -2,6 +2,8 @@
 
 Ember FormBuilder is a form builder implementation for [Ember.js](http://emberjs.com) and Handlebars. It's inspired by the Rails form builders, simple_form and formtastic.
 
+I wrote a blog post about it: http://blog.luansantos.com/2012/03/19/introducing-ember-formbuilder/
+
 #### Is It Good?
 
 No. It's piece of crap. But the general idea is good.
