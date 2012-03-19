@@ -41,31 +41,12 @@ Inside your Handlebars templates you can create forms simply using this DSL:
   <legend>User Data:</legend>
 
   {{input "name" hint="Type your name"}}
-  {{input "birthday" as="date"}}
-  {{input "another_date" as="string" mask="##/##/####" component="datepicker"}}
   {{input "email" placeholder="mail@example.com"}}
   {{input "gender" as="select" collectionBinding="App.genders"}}
 
   {{submit "Save"}}
   {{cancel "Reset"}}
 {{/form}}
-```
-
-Planned
-```html
-  {{input "categories" as="checkboxes" collectionBinding="App.categoriesController"}}
-  {{input "option" as="radio_buttons" collectionBinding="App.optionsController"}}
-
-  <div class="books">
-    {{#fieldsFor "book"}}
-      <div class="books">
-        {{input "title"}}
-        {{input "author"}}
-        {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
-      </div>
-    {{/fieldsFor}}
-  </div>
-  {{addAssociation "books" text="Add Book" objectClass="App.Models.Book" classes="btn btn-success"}}
 ```
 
 This form sets properties inside the `user` object with the names passed to the `input` helper.
@@ -128,3 +109,22 @@ Ember.FormBuilder.STRINGS =
       email: 'john@example.com'
 ```
 
+## Planned features
+
+```html
+  {{input "birthday" as="date"}}
+  {{input "another_date" as="string" mask="##/##/####" component="datepicker"}}
+  {{input "categories" as="checkboxes" collectionBinding="App.categoriesController"}}
+  {{input "option" as="radio_buttons" collectionBinding="App.optionsController"}}
+
+  <div class="books">
+    {{#fieldsFor "book"}}
+      <div class="books">
+        {{input "title"}}
+        {{input "author"}}
+        {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
+      </div>
+    {{/fieldsFor}}
+  </div>
+  {{addAssociation "books" text="Add Book" objectClass="App.Models.Book" classes="btn btn-success"}}
+```
