@@ -7,11 +7,20 @@ appendView = ->
 module "formFor Helper"
   setup: ->
     object = Ember.Object.create()
+    genders = Ember.ArrayProxy.create
+      content: [
+        { value: 'male', label: 'Male' },
+        { value: 'female', label: 'Female' }
+      ]
     view = Ember.View.create
+      object: object
+      genders: genders
       template: Ember.Handlebars.compile '
         <section>
           {{#formFor "object" classes="form-horizontal"}}
             {{input "name"}}
+            {{input "gender" as="select" collectionBinding="parentView.genders" prompt="Please select"}}
+
             {{submit "Save"}}
             {{cancel "Cancel"}}
           {{/formFor}}
@@ -26,7 +35,6 @@ module "formFor Helper"
       objectCancel: ->
         @set 'cancelFired', true
 
-    view.set 'object', object
     appendView()
 
   teardown: ->
@@ -66,8 +74,8 @@ test "cancel fires event on the parent view", ->
   ok view.cancelFired?
 
 test "input label", ->
-  equal view.$('form label').text().trim(), 'Name', "should have default label"
-  equal view.$('form label').attr('for'), view.$('form input').attr('id'), "should be for the given input"
+  equal view.$('form label').first().text().trim(), 'Name', "should have default label"
+  equal view.$('form label').first().attr('for'), view.$('form input').attr('id'), "should be for the given input"
 
 test "inputs with bindings", ->
   ok /<section>.*<form.*<\/section>.*/.test(view.$().html()), "form should be correctly set"
@@ -86,25 +94,12 @@ test "inputs with bindings", ->
   ok $('#name').text() is 'Changed Again', "binds to all instances"
 
 test "select tag", ->
-  people = Ember.ArrayProxy.create([{id: 1, firstName: 'Yehuda'}, {id: 1, firstName: 'Yehuda'}])
-  object = Ember.Object.create()
-
-  view = Ember.View.create
-    people: people
-    object: object
-
-    template:
-      Ember.Handlebars.compile '
-        <section>
-          {{#formFor "object" classes="form-horizontal"}}
-            {{input "person" as="select" collectionBinding="people" prompt="Please select"}}
-          {{/formFor}}
-        </section>
-    '
-
-  appendView()
-
-  console.log view.$("form select")
   ok view.$("form select").length > 0, "should have select tag"
   equal(view.$("form select").val(), 'Please select', "By default, the prompt is selected in the DOM")
-  equal(view.$("form select").find('option').length, 2, "Options were rendered")
+  equal(view.$("form select").find('option').length, 3, "Options were rendered")
+
+test "select tag with bindings", ->
+  Ember.run ->
+    view.genders.pushObject Ember.Object.create(label: 'Another', value: 'an')
+  
+  equal(view.$("form select").find('option').length, 4, "Options were rendered")

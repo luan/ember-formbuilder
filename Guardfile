@@ -2,5 +2,5 @@
 # More info at https://github.com/guard/guard#readme
 
 guard 'livereload' do
-  watch(%r{(packages/ember-formbuilder/.+\.(css|js|html)).*})  { |m| "/assets/#{m[2]}" }
+  watch(%r{packages/ember-formbuilder/.+\.(js|coffee)})
 end

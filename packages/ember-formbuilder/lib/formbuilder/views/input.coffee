@@ -60,18 +60,16 @@ Ember.FormBuilder.Input = Ember.View.extend
 
   textInput: ->
     '{{view ' + @inputView + ' id="' + Ember.guidFor(this) + 'input"
-               placeholder=content.placeholder class=content.inputClass
-               valueBinding="content.value"}} '
-
+         placeholder=content.placeholder class=content.inputClass
+         valueBinding="content.value"}} '
+  
   selectTag: ->
-    console.log @collectionBinding, "Binding"
-    console.log @collection, "Collection"
-
-    select = '{{view Ember.Select viewName="select"
-                contentBinding="' + @collection + '"
-                optionLabelPath="firstName"
-                optionValuePath="id"'
+    select = '{{view Ember.Select
+                  contentBinding="content.collection"
+                  selectionBinding="value"
+                  optionLabelPath="content.label"
+                  optionValuePath="content.value"'
     if @prompt
-      select += 'prompt="' + @prompt + '"'
+      select += ' prompt="' + @prompt + '"'
 
     select += '}}'
