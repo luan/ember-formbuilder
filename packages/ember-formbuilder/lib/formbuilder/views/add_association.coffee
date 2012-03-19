@@ -5,5 +5,5 @@ Ember.FormBuilder.AddAssociation = Ember.View.extend
 
   click: ->
     content = @content
-    cls = Ember.getPath(@objectClass)
-    content.pushObject cls.create()
+    klass = Ember.getPath(@objectClass)
+    content.pushObject klass.create(form: @form)

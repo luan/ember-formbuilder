@@ -22,10 +22,8 @@ module "fieldsFor Helper"
         <section>
           {{#formFor "myObject"}}
             <div class="writer">
-              {{#fieldsFor "writer"}}
-                {{input "firstName"}}
-                {{input "lastName"}}
-              {{/fieldsFor}}
+              {{input "writer.firstName"}}
+              {{input "writer.lastName"}}
             </div>
             <div class="books">
               {{#fieldsFor "books"}}
@@ -62,7 +60,7 @@ test "bindings", ->
   equal view.$('form div.books input').first().val(), 'Changed #1'
   notEqual view.$('form div.books input').last().val(), 'Changed #1'
 
-test "add associations", ->
+test "add/remove associations", ->
   link = view.$('form a').last()
 
   ok link.hasClass('btn-success')
@@ -73,8 +71,7 @@ test "add associations", ->
 
   equal view.$('form div.books input').length, 3
 
-test "remove associations", ->
-  link = view.$('form a').first()
+  link = view.$('form a.btn-danger').last()
 
   ok link.hasClass('btn-danger')
   equal link.text(), 'Remove Book'

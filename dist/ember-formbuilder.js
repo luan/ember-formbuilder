@@ -71,7 +71,7 @@
   Ember.Handlebars.registerHelper("addAssociation", function(property, options) {
     ember_assert("The addAssociation helper only takes a single argument", arguments.length <= 2);
     options.hash.contentBinding = "content." + property;
-    options.hash.preserveContext = false;
+    options.hash.preserveContext = true;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.AddAssociation', options);
   });
 
@@ -108,11 +108,10 @@
 
   Ember.Handlebars.registerHelper("fieldsFor", function(property, options) {
     ember_assert("The fieldsFor helper only takes a single argument", arguments.length <= 2);
-    options.hash.collectionBinding = "content." + property;
-    options.hash["class"] = "nested-" + property;
-    options.hash.preserveContext = false;
+    options.hash.contentBinding = "content." + property;
+    options.hash.preserveContext = true;
     options.hash.form = this;
-    return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.NestedFields', options);
+    return Ember.Handlebars.helpers.collection.call(this, 'Ember.FormBuilder.NestedFields', options);
   });
 
 }).call(this);
@@ -162,7 +161,7 @@
     }
     options.hash.valueBinding = "content." + property;
     options.hash.preserveContext = true;
-    options.hash.form = this;
+    options.hash.form = this.form || this;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.Input', options);
   });
 
@@ -176,8 +175,9 @@
 
   Ember.Handlebars.registerHelper("removeAssociation", function(property, options) {
     ember_assert("The removeAssociation helper only takes a single argument", arguments.length <= 2);
+    console.log(this);
     options.hash.contentBinding = "content";
-    options.hash.collectionBinding = "content." + property;
+    options.hash.collectionBinding = "form.content." + property;
     options.hash.preserveContext = true;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.RemoveAssociation', options);
   });
@@ -228,10 +228,12 @@
     classNameBindings: ['classes'],
     template: Ember.Handlebars.compile('{{text}}'),
     click: function() {
-      var cls, content;
+      var content, klass;
       content = this.content;
-      cls = Ember.getPath(this.objectClass);
-      return content.pushObject(cls.create());
+      klass = Ember.getPath(this.objectClass);
+      return content.pushObject(klass.create({
+        form: this.form
+      }));
     }
   });
 
@@ -367,18 +369,17 @@
     },
     textInput: function() {
       return '{{view ' + this.inputView + ' id="' + Ember.guidFor(this) + 'input"\
-               placeholder=content.placeholder class=content.inputClass\
-               valueBinding="content.value"}} ';
+         placeholder=content.placeholder class=content.inputClass\
+         valueBinding="content.value"}} ';
     },
     selectTag: function() {
       var select;
-      console.log(this.collectionBinding, "Binding");
-      console.log(this.collection, "Collection");
-      select = '{{view Ember.Select viewName="select"\
-                contentBinding="' + this.collection + '"\
-                optionLabelPath="firstName"\
-                optionValuePath="id"';
-      if (this.prompt) select += 'prompt="' + this.prompt + '"';
+      select = '{{view Ember.Select\
+                  contentBinding="content.collection"\
+                  selectionBinding="value"\
+                  optionLabelPath="content.label"\
+                  optionValuePath="content.value"';
+      if (this.prompt) select += ' prompt="' + this.prompt + '"';
       return select += '}}';
     }
   });
@@ -391,18 +392,16 @@
 (function(exports) {
 (function() {
 
-  Ember.FormBuilder.NestedFields = Ember.CollectionView.extend({
-    classNameBindings: ['classes', 'nestedClass'],
-    didInsertElement: function() {
-      return console.log(this.morph);
-    },
-    collectionChanged: Ember.observer(function() {
-      return this.set('content', Ember.makeArray(this.collection));
-    }, 'collection'),
-    itemViewClass: Ember.View.extend({
-      classNameBindings: ['classes', ':nested-fields'],
-      form: this.form
-    })
+  Ember.FormBuilder.NestedFields = Ember.CollectionView.extend(Ember.Metamorph, {
+    itemViewClass: Ember.View.extend(Ember.Metamorph)
+  }, {
+    classNameBindings: ['classes', ':nested-fields'],
+    form: this.form,
+    init: function() {
+      this._super();
+      this.set('mixin', this.mixin || this.form.mixin || 'bootstrap');
+      return this.reopen(Ember.FormBuilder.getMixin(this.mixin));
+    }
   });
 
 }).call(this);
@@ -419,6 +418,7 @@
     template: Ember.Handlebars.compile('{{text}}'),
     click: function() {
       var collection, content;
+      console.log('coll:', this.content);
       collection = this.collection;
       content = this.content;
       return collection.removeObject(content);
