@@ -21,7 +21,7 @@ Ember.FormBuilder.Input = Ember.View.extend
     @set 'showLabel', true if @showLabel is undefined
     @set 'showWrapper', true if @showWrapper is undefined
     
-    @set 'tagName', '' unless @showWrapper
+    @set 'wrapperTag', '' unless @showWrapper
 
     @set 'value', '' if Ember.empty(@value)
     @errorChanged()

@@ -241,7 +241,7 @@
       this.set('errorClass', this.errorClass || this.form.errorClass);
       if (this.showLabel === void 0) this.set('showLabel', true);
       if (this.showWrapper === void 0) this.set('showWrapper', true);
-      if (!this.showWrapper) this.set('tagName', '');
+      if (!this.showWrapper) this.set('wrapperTag', '');
       if (Ember.empty(this.value)) this.set('value', '');
       this.errorChanged();
       return this.set('template', Ember.Handlebars.compile('\
