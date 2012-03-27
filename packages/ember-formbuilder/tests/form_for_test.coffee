@@ -115,10 +115,6 @@ test "checkboxes with bindings", ->
 
   equal(view.$("form label.checkbox input[type='checkbox']").length, 3, "checkboxes were rendered")
 
-  Ember.run ->
-    console.log view.object.categories
-    #view.object.categories
-
 test "radio buttons with bindings", ->
   Ember.run ->
     view.genders.pushObject Ember.Object.create(label: 'Another', value: 'an')

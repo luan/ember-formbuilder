@@ -19,29 +19,38 @@ Ember.FormBuilder.Input = Ember.View.extend
     @set 'errorClass', @errorClass or @form.errorClass
 
     @set 'showLabel', true if @showLabel is undefined
+    @set 'showWrapper', true if @showWrapper is undefined
+    
+    @set 'tagName', '' unless @showWrapper
 
     @set 'value', '' if Ember.empty(@value)
     @errorChanged()
 
     @set 'template', Ember.Handlebars.compile '
-      {{#if showLabel}}
-        <label {{bindAttr class="labelClass"}} for="' + Ember.guidFor(this) + 'input">
-          {{label}}
-        </label>
+      {{#if showWrapper}}
+        {{#if showLabel}}
+          <label {{bindAttr class="labelClass"}} for="' + Ember.guidFor(this) + 'input">
+            {{label}}
+          </label>
+        {{/if}}
+        {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}
+          ' + @field() + '
+          {{#if content.error}}
+            {{#view Ember.View class=content.errorClass tagNameBinding="content.errorTag" contentBinding="content"}}
+              {{content.error}}
+            {{/view}}
+          {{/if}}
+          {{#if content.hint}}
+            {{#view Ember.View class=content.helpClass tagNameBinding="content.helpTag" contentBinding="content"}}
+              {{content.hint}}
+            {{/view}}
+          {{/if}}
+        {{/view}}
+      {{else}}
+        {{#view Ember.View tagName="" contentBinding="this"}}
+          ' + @field() + '
+        {{/view}}
       {{/if}}
-      {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}
-        ' + @field() + '
-        {{#if content.error}}
-          {{#view Ember.View class=content.errorClass tagNameBinding="content.errorTag" contentBinding="content"}}
-            {{content.error}}
-          {{/view}}
-        {{/if}}
-        {{#if content.hint}}
-          {{#view Ember.View class=content.helpClass tagNameBinding="content.helpTag" contentBinding="content"}}
-            {{content.hint}}
-          {{/view}}
-        {{/if}}
-      {{/view}}
     '
 
   errorChanged: Ember.observer(->

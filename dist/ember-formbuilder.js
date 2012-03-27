@@ -240,27 +240,35 @@
       this.set('errorTag', this.errorTag || this.form.errorTag);
       this.set('errorClass', this.errorClass || this.form.errorClass);
       if (this.showLabel === void 0) this.set('showLabel', true);
+      if (this.showWrapper === void 0) this.set('showWrapper', true);
+      if (!this.showWrapper) this.set('tagName', '');
       if (Ember.empty(this.value)) this.set('value', '');
       this.errorChanged();
       return this.set('template', Ember.Handlebars.compile('\
-      {{#if showLabel}}\
-        <label {{bindAttr class="labelClass"}} for="' + Ember.guidFor(this) + 'input">\
-          {{label}}\
-        </label>\
+      {{#if showWrapper}}\
+        {{#if showLabel}}\
+          <label {{bindAttr class="labelClass"}} for="' + Ember.guidFor(this) + 'input">\
+            {{label}}\
+          </label>\
+        {{/if}}\
+        {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}\
+          ' + this.field() + '\
+          {{#if content.error}}\
+            {{#view Ember.View class=content.errorClass tagNameBinding="content.errorTag" contentBinding="content"}}\
+              {{content.error}}\
+            {{/view}}\
+          {{/if}}\
+          {{#if content.hint}}\
+            {{#view Ember.View class=content.helpClass tagNameBinding="content.helpTag" contentBinding="content"}}\
+              {{content.hint}}\
+            {{/view}}\
+          {{/if}}\
+        {{/view}}\
+      {{else}}\
+        {{#view Ember.View tagName="" contentBinding="this"}}\
+          ' + this.field() + '\
+        {{/view}}\
       {{/if}}\
-      {{#view Ember.View tagName=inputWrapperTag class=inputWrapperClass contentBinding="this"}}\
-        ' + this.field() + '\
-        {{#if content.error}}\
-          {{#view Ember.View class=content.errorClass tagNameBinding="content.errorTag" contentBinding="content"}}\
-            {{content.error}}\
-          {{/view}}\
-        {{/if}}\
-        {{#if content.hint}}\
-          {{#view Ember.View class=content.helpClass tagNameBinding="content.helpTag" contentBinding="content"}}\
-            {{content.hint}}\
-          {{/view}}\
-        {{/if}}\
-      {{/view}}\
     '));
     },
     errorChanged: Ember.observer(function() {
