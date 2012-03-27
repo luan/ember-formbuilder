@@ -1,6 +1,6 @@
 Ember.FormBuilder.Submit = Ember.View.extend
   classNameBindings: ['classes']
-  template: Ember.Handlebars.compile '{{text}}'
+  template: Ember.Handlebars.compile '{{{text}}}'
 
   init: ->
     @_super()
