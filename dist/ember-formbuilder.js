@@ -58,23 +58,6 @@
 
 
 
-
-
-}).call(this);
-
-})({});
-
-
-(function(exports) {
-(function() {
-
-  Ember.Handlebars.registerHelper("addAssociation", function(property, options) {
-    ember_assert("The addAssociation helper only takes a single argument", arguments.length <= 2);
-    options.hash.contentBinding = "content." + property;
-    options.hash.preserveContext = true;
-    return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.AddAssociation', options);
-  });
-
 }).call(this);
 
 })({});
@@ -96,22 +79,6 @@
     options.hash.form = this;
     options.hash.text = text;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.Cancel', options);
-  });
-
-}).call(this);
-
-})({});
-
-
-(function(exports) {
-(function() {
-
-  Ember.Handlebars.registerHelper("fieldsFor", function(property, options) {
-    ember_assert("The fieldsFor helper only takes a single argument", arguments.length <= 2);
-    options.hash.contentBinding = "content." + property;
-    options.hash.preserveContext = true;
-    options.hash.form = this;
-    return Ember.Handlebars.helpers.collection.call(this, 'Ember.FormBuilder.NestedFields', options);
   });
 
 }).call(this);
@@ -160,26 +127,10 @@
       options.hash.label = words.join(' ');
     }
     options.hash.valueBinding = "content." + property;
+    options.hash.name = property;
     options.hash.preserveContext = true;
     options.hash.form = this.form || this;
     return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.Input', options);
-  });
-
-}).call(this);
-
-})({});
-
-
-(function(exports) {
-(function() {
-
-  Ember.Handlebars.registerHelper("removeAssociation", function(property, options) {
-    ember_assert("The removeAssociation helper only takes a single argument", arguments.length <= 2);
-    console.log(this);
-    options.hash.contentBinding = "content";
-    options.hash.collectionBinding = "form.content." + property;
-    options.hash.preserveContext = true;
-    return Ember.Handlebars.helpers.view.call(this, 'Ember.FormBuilder.RemoveAssociation', options);
   });
 
 }).call(this);
@@ -211,38 +162,6 @@
 
 
 (function(exports) {
-
-  Ember.FormBuilder.Info = Ember.View.extend({
-    classNameBindings: ['classes'],
-    template: Ember.Handlebars.compile('{{text}}')
-  });
-
-})({});
-
-
-(function(exports) {
-(function() {
-
-  Ember.FormBuilder.AddAssociation = Ember.View.extend({
-    tagName: 'a',
-    classNameBindings: ['classes'],
-    template: Ember.Handlebars.compile('{{text}}'),
-    click: function() {
-      var content, klass;
-      content = this.content;
-      klass = Ember.getPath(this.objectClass);
-      return content.pushObject(klass.create({
-        form: this.form
-      }));
-    }
-  });
-
-}).call(this);
-
-})({});
-
-
-(function(exports) {
 (function() {
 
   Ember.FormBuilder.Cancel = Ember.View.extend({
@@ -265,14 +184,19 @@
 
 
 (function(exports) {
+(function() {
 
-  Ember.FormBuilder.Error = Ember.FormBuilder.Info.extend({
-    init: function() {
-      this._super();
-      this.set('classes', this.get('classes') || Ember.FormBuilder.errorClass);
-      return this.set('tagName', this.get('tagName') || Ember.FormBuilder.errorTag);
-    }
+  Ember.FormBuilder.Checkbox = Ember.Checkbox.extend({
+    tagName: '',
+    id: Ember.computed(function() {
+      return Ember.guidFor(this);
+    }),
+    defaultTemplate: Ember.Handlebars.compile('\
+    <input type="checkbox"{{bindAttr id="id" name="name" checked="value" disabled="disabled"}}>\
+  ')
   });
+
+}).call(this);
 
 })({});
 
@@ -296,19 +220,6 @@
 
 
 (function(exports) {
-
-  Ember.FormBuilder.Help = Ember.FormBuilder.Info.extend({
-    init: function() {
-      this._super();
-      this.set('classes', this.get('classes') || Ember.FormBuilder.helpClass);
-      return this.set('tagName', this.get('tagName') || Ember.FormBuilder.helpTag);
-    }
-  });
-
-})({});
-
-
-(function(exports) {
 (function() {
 
   Ember.FormBuilder.Input = Ember.View.extend({
@@ -318,7 +229,7 @@
     label: '',
     init: function() {
       this._super();
-      this.set('inputView', this.inputView || 'Ember.TextField');
+      this.set('inputView', this.inputView || 'Ember.FormBuilder.TextField');
       this.set('wrapperTag', this.wrapperTag || this.form.wrapperTag);
       this.set('wrapperClass', this.wrapperClass || this.form.wrapperClass);
       this.set('inputWrapperTag', this.inputWrapperTag || this.form.inputWrapperTag);
@@ -363,18 +274,49 @@
       switch (this.as) {
         case "select":
           return this.selectTag();
+        case "checkboxes":
+          return this.checkboxes();
+        case "radioButtons":
+          return this.radioButtons();
+        case "text":
+          this.set('inputView', 'Ember.FormBuilder.TextArea');
+          return this.textInput();
         default:
           return this.textInput();
       }
     },
     textInput: function() {
       return '{{view ' + this.inputView + ' id="' + Ember.guidFor(this) + 'input"\
-         placeholder=content.placeholder class=content.inputClass\
-         valueBinding="content.value"}} ';
+        name=content.name\
+        placeholder=content.placeholder class=content.inputClass\
+        valueBinding="content.value"}} ';
+    },
+    checkboxes: function() {
+      return '{{#each content.collection contentBinding="this.content"}}\
+        <label class="checkbox">\
+          {{view Ember.FormBuilder.Checkbox name=content.name valueBinding="content.value"}}\
+          {{label}}\
+        </label>\
+      {{/each}}';
+    },
+    radioButtons: function() {
+      var group;
+      group = "" + (Ember.guidFor(this)) + "group";
+      return '{{#each content.collection}}\
+        <label class="radio">\
+          {{view Ember.FormBuilder.RadioButton\
+            name=content.name\
+            optionBinding="value"\
+            valueBinding="parentView.content.value"\
+            group="' + group + '"}}\
+          {{label}}\
+        </label>\
+      {{/each}}';
     },
     selectTag: function() {
       var select;
-      select = '{{view Ember.Select\
+      select = '{{view Ember.FormBuilder.Select\
+                  name=content.name\
                   contentBinding="content.collection"\
                   selectionBinding="value"\
                   optionLabelPath="content.label"\
@@ -392,15 +334,25 @@
 (function(exports) {
 (function() {
 
-  Ember.FormBuilder.NestedFields = Ember.CollectionView.extend(Ember.Metamorph, {
-    itemViewClass: Ember.View.extend(Ember.Metamorph)
-  }, {
-    classNameBindings: ['classes', ':nested-fields'],
-    form: this.form,
-    init: function() {
-      this._super();
-      this.set('mixin', this.mixin || this.form.mixin || 'bootstrap');
-      return this.reopen(Ember.FormBuilder.getMixin(this.mixin));
+  Ember.FormBuilder.RadioButton = Ember.View.extend({
+    checked: false,
+    group: "radio_button",
+    disabled: false,
+    classNames: ["ember-radio-button"],
+    defaultTemplate: Ember.Handlebars.compile("    <input type=\"radio\" {{ bindAttr disabled=\"disabled\" name=\"group\" value=\"option\" checked=\"checked\"}} />  "),
+    attributeBindings: ['name'],
+    bindingChanged: (function() {
+      if (this.get("option") === get(this, "value")) {
+        return this.set("checked", true);
+      }
+    }).observes("value"),
+    change: function() {
+      return Ember.run.once(this, this._updateElementValue);
+    },
+    _updateElementValue: function() {
+      var input;
+      input = this.$("input:radio");
+      return set(this, "value", input.attr("value"));
     }
   });
 
@@ -412,16 +364,10 @@
 (function(exports) {
 (function() {
 
-  Ember.FormBuilder.RemoveAssociation = Ember.View.extend({
-    tagName: 'a',
-    classNameBindings: ['classes'],
-    template: Ember.Handlebars.compile('{{text}}'),
-    click: function() {
-      var collection, content;
-      console.log('coll:', this.content);
-      collection = this.collection;
-      content = this.content;
-      return collection.removeObject(content);
+  Ember.FormBuilder.Select = Ember.Select.extend({
+    init: function() {
+      this._super();
+      return this.attributeBindings.push('name');
     }
   });
 
@@ -444,6 +390,36 @@
     },
     click: function(event) {
       return this.form.parentView["" + this.form.objectName + "Submit"](event);
+    }
+  });
+
+}).call(this);
+
+})({});
+
+
+(function(exports) {
+(function() {
+
+  Ember.FormBuilder.TextArea = Ember.TextArea.extend({
+    init: function() {
+      this._super();
+      return this.attributeBindings.push('name');
+    }
+  });
+
+}).call(this);
+
+})({});
+
+
+(function(exports) {
+(function() {
+
+  Ember.FormBuilder.TextField = Ember.TextField.extend({
+    init: function() {
+      this._super();
+      return this.attributeBindings.push('name');
     }
   });
 

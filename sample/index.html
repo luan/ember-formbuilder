@@ -98,17 +98,6 @@
                   {{input "email" placeholder="mail@example.com"}}
                   {{input "gender" as="select" collectionBinding="App.genders" prompt="Select one..."}}
 
-                  <div class="books">
-                    {{#fieldsFor "books"}}
-                      <div class="books">
-                        {{input "title"}}
-                        {{input "author"}}
-                        {{removeAssociation "books" text="Remove Book" classes="btn btn-danger"}}
-                      </div>
-                    {{/fieldsFor}}
-                  </div>
-                  {{addAssociation "books" text="Add Book" objectClass="Ember.Object" classes="btn btn-success"}}
-
                   {{submit "Save"}}
                   {{cancel "Reset"}}
                 {{/formFor}}

@@ -6,6 +6,7 @@ Ember.FormBuilder.RadioButton = Ember.View.extend
   defaultTemplate: Ember.Handlebars.compile "
     <input type=\"radio\" {{ bindAttr disabled=\"disabled\" name=\"group\" value=\"option\" checked=\"checked\"}} />
   "
+  attributeBindings: ['name']
 
   bindingChanged: (->
     @set "checked", true  if @get("option") is get(this, "value")

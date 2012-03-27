@@ -6,7 +6,7 @@ Ember.FormBuilder.Input = Ember.View.extend
 
   init: ->
     @_super()
-    @set 'inputView', @inputView or 'Ember.TextField'
+    @set 'inputView', @inputView or 'Ember.FormBuilder.TextField'
 
     @set 'wrapperTag', @wrapperTag or @form.wrapperTag
     @set 'wrapperClass', @wrapperClass or @form.wrapperClass
@@ -59,18 +59,22 @@ Ember.FormBuilder.Input = Ember.View.extend
         @checkboxes()
       when "radioButtons"
         @radioButtons()
+      when "text"
+        @set 'inputView', 'Ember.FormBuilder.TextArea'
+        @textInput()
       else
         @textInput()
 
   textInput: ->
     '{{view ' + @inputView + ' id="' + Ember.guidFor(this) + 'input"
-         placeholder=content.placeholder class=content.inputClass
-         valueBinding="content.value"}} '
+        name=content.name
+        placeholder=content.placeholder class=content.inputClass
+        valueBinding="content.value"}} '
   
   checkboxes: ->
     '{{#each content.collection contentBinding="this.content"}}
         <label class="checkbox">
-          {{view Ember.FormBuilder.Checkbox valueBinding="content.value"}}
+          {{view Ember.FormBuilder.Checkbox name=content.name valueBinding="content.value"}}
           {{label}}
         </label>
       {{/each}}'
@@ -80,6 +84,7 @@ Ember.FormBuilder.Input = Ember.View.extend
     '{{#each content.collection}}
         <label class="radio">
           {{view Ember.FormBuilder.RadioButton
+            name=content.name
             optionBinding="value"
             valueBinding="parentView.content.value"
             group="' + group + '"}}
@@ -88,7 +93,8 @@ Ember.FormBuilder.Input = Ember.View.extend
       {{/each}}'
 
   selectTag: ->
-    select = '{{view Ember.Select
+    select = '{{view Ember.FormBuilder.Select
+                  name=content.name
                   contentBinding="content.collection"
                   selectionBinding="value"
                   optionLabelPath="content.label"
