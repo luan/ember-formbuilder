@@ -107,9 +107,8 @@ Ember.FormBuilder.Input = Ember.View.extend
     select = '{{view Ember.FormBuilder.Select
                   name=content.name
                   contentBinding="content.collection"
-                  selectionBinding="value"
-                  optionLabelPath="content.label"
-                  optionValuePath="content.value"'
+                  selectionBinding="parentView.value"
+                  optionLabelPath="content.label"'
     if @prompt
       select += ' prompt="' + @prompt + '"'
 
