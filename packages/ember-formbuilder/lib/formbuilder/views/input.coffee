@@ -75,10 +75,12 @@ Ember.FormBuilder.Input = Ember.View.extend
         @textInput()
 
   textInput: ->
+    append = ''
+    append = ' type="number"' if @as is 'number'
     '{{view ' + @inputView + ' id="' + Ember.guidFor(this) + 'input"
         name=content.name
         placeholder=content.placeholder class=content.inputClass
-        valueBinding="content.value"}} '
+        valueBinding="content.value"' + append + '}} '
   
   checkboxes: ->
     '{{#each content.collection contentBinding="this.content"}}
