@@ -1,16 +1,13 @@
 # Ember FormBuilder
 
+**This library is obsolete, there is a more updated library that achieves the same goals as this was supposed to.*(
+**[ember-easyform](https://github.com/dockyard/ember-easyForm) by @dockyard.**
+
+## OLD README:
+
 Ember FormBuilder is a form builder implementation for [Ember.js](http://emberjs.com) and Handlebars. It's inspired by the Rails form builders, simple_form and formtastic.
 
 I wrote a blog post about it: http://blog.luansantos.com/2012/03/19/introducing-ember-formbuilder/
-
-#### Is It Good?
-
-No. It's piece of crap. But the general idea is good.
-
-#### Is It "Production Ready™"?
-
-No. Of course not.
 
 ## Installation
 
